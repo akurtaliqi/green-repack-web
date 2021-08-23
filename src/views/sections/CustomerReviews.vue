@@ -4,9 +4,8 @@
     space="64"
   >
     <base-section-heading
-      icon="mdi-chat-processing"
-      space="0"
-      title="Customer Reviews"
+      icon="mdi-vuetify"
+      title="Découvrez les derniers produits mis en vente"
     />
 
     <v-carousel
@@ -31,9 +30,10 @@
 
             <v-avatar
               class="mb-6"
-              size="128"
+              size="200"
+              style="border-radius:0px;"
             >
-              <base-img :src="require(`@/assets/user-${i + 1}.jpg`)" />
+              <base-img :src="require(`@/assets/products-${i + 1}.png`)" />
             </v-avatar>
 
             <base-title
@@ -60,19 +60,14 @@
     data: () => ({
       customers: [
         {
-          review: '"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam aspernatur, sint recusandae cum temporibus quos saepe repellendus consectetur et reprehenderit. Ratione ipsam consequuntur quo eligendi mollitia veniam facere possimus inventore."',
-          name: 'HENRY LUSIO',
-          role: 'DIRECTOR OF EXAMPLE LTD',
+          review: 'Ordinateur de la marque Dell',
+          role: 'ORDINATEUR',
         },
         {
-          review: '"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam aspernatur, sint recusandae cum temporibus quos saepe repellendus consectetur et reprehenderit. Ratione ipsam consequuntur quo eligendi mollitia veniam facere possimus inventore."',
-          name: 'HENRY LUSIO',
-          role: 'DIRECTOR OF EXAMPLE LTD',
+          role: 'ORDINATEUR',
         },
         {
-          review: '"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam aspernatur, sint recusandae cum temporibus quos saepe repellendus consectetur et reprehenderit. Ratione ipsam consequuntur quo eligendi mollitia veniam facere possimus inventore."',
-          name: 'HENRY LUSIO',
-          role: 'DIRECTOR OF EXAMPLE LTD',
+          role: 'ORDINATEUR',
         },
       ],
     }),

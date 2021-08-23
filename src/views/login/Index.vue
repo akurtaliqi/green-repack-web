@@ -14,16 +14,8 @@
 
     mixins: [
       LoadSections([
-        'login-buyer',
-        'login-seller',
+        'login',
       ]),
     ],
-
-    props: {
-      id: {
-        type: String,
-        default: 'recent-works',
-      },
-    },
   }
 </script>

@@ -8,17 +8,9 @@
       height="80"
     >
       <base-img
-        :src="require('@/assets/logo.svg')"
-        class="mr-3 hidden-xs-only"
+        :src="require(`@/assets/greenrepacklogo.png`)"
         contain
-        max-width="46"
-        width="100%"
-      />
-
-      <base-img
-        :src="require(`@/assets/zero-logo-${$vuetify.theme.isDark ? 'dark' : 'light'}.svg`)"
-        contain
-        max-width="96"
+        max-width="150"
         width="100%"
       />
 
@@ -70,13 +62,11 @@
       drawer: null,
       items: [
         'Home',
-        'About',
-        'Marketing',
         'Gallery',
-        'Pricing',
-        'News',
-        'Contact',
+        'Products',
         'Login',
+        'About',
+        'Contact',
       ],
     }),
   }

@@ -70,8 +70,6 @@
           { title: 'Miranda Shaffer', subtitle: 'Branding' },
           { title: 'Bradyn Kramer', subtitle: 'Photography' },
           { title: 'Bailey Wolfe', subtitle: 'Wordpress' },
-          { title: 'Lorelei Holloway', subtitle: 'Ecommerce' },
-          { title: 'Justine Elliott', subtitle: 'Ecommerce' },
         ].filter(project => {
           if (this.tab.toLowerCase() === 'all') return true
 

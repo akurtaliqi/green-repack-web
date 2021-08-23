@@ -1,8 +1,8 @@
 <template>
   <section id="hero">
     <v-img
-      :min-height="minHeight"
-      :src="require('@/assets/light.jpg')"
+      max-height="500"
+      :src="require('@/assets/green-background2.jpg')"
       class="white--text"
       gradient="to bottom, rgba(11, 28, 61, .9), rgba(0,0,0,.4)"
     >
@@ -10,22 +10,22 @@
         <v-responsive
           class="d-flex align-center mx-auto"
           height="100%"
-          max-width="700"
+          max-width="1000"
           width="100%"
         >
           <base-subheading
             weight="regular"
-            title="WE LOVE MAKING THINGS SIMPLE AND AMAZING"
+            title="LE SITE NUMÉRO UN D'ACHAT DE PRODUITS RECONDITIONNÉS"
           />
 
           <base-heading
             size="text-h2"
-            title="WELCOME TO ZERO"
+            title="BIENVENUE SUR GREEN REPACK"
             weight="medium"
           />
 
           <base-body>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae nobis neque aspernatur in quas iure id aliquid, esse debitis, quibusdam mollitia! Quia ea expedita magnam totam, earum omnis et perspiciatis?
+            Green Repack est une jeune société française de vente de produits électroniques reconditionnés. Notre mission est de proposer des produits fiables, à des prix imbattables. Tous nos produits sont vérifiés par des experts.
           </base-body>
 
           <div
@@ -33,18 +33,19 @@
             class="d-flex flex-wrap"
           >
             <base-btn>
-              Discover More
+              Connectez-vous
             </base-btn>
 
-            <span class="font-weight-bold ml-6 mr-4 my-4">or</span>
+            <span class="font-weight-bold ml-6 mr-4 my-4">ou</span>
 
             <base-btn
               :ripple="false"
               class="pa-1"
               height="auto"
               text
+              color="white"
             >
-              Get Started Now
+              Créez un compte
             </base-btn>
           </div>
         </v-responsive>

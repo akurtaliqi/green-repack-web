@@ -1,5 +1,5 @@
-<template>
-  <base-section id="gallery">
+<!--template>
+  <base-section id="login">
     <v-tabs
       v-model="tab"
       centered
@@ -40,15 +40,56 @@
       </v-fade-transition>
     </v-container>
   </base-section>
+</template-->
+<template>
+  <v-theme-provider dark>
+    <base-section
+      id="login"
+    >
+      <v-container>
+        <v-row>
+          <v-col
+            cols="12"
+            md="5"
+          >
+            <base-login-buyer />
+          </v-col>
+
+          <v-col
+            class="text-center hidden-sm-and-down"
+            cols="2"
+          >
+            <v-divider vertical />
+          </v-col>
+
+          <v-col
+            cols="12"
+            md="5"
+          >
+            <base-login-seller />
+          </v-col>
+        </v-row>
+        <v-divider class="my-6" />
+        <base-section-heading title="Vous n'avez pas de compte ?">
+          Créez un compte en quelques instants
+        </base-section-heading>
+        <v-col align="center">
+        <base-btn
+          href="mailto:shop@vuetifyjs.com?subject=Zero%20Theme%20Question"
+          outlined
+          target="_blank"
+        >
+          Créer un compte
+        </base-btn>
+        </v-col>
+      </v-container>
+    </base-section>
+  </v-theme-provider>
 </template>
 
 <script>
   export default {
-    name: 'SectionGallery',
-
-    components: {
-      ProjectCard: () => import('@/components/ProjectCard'),
-    },
+    name: 'Login',
 
     data: () => ({
       tab: 'All',

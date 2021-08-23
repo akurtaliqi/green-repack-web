@@ -2,7 +2,7 @@
   <base-section id="about-our-product">
     <base-section-heading
       icon="mdi-vuetify"
-      title="About our Product"
+      title="Découvrez les produits mis en vente"
     />
 
     <v-container>

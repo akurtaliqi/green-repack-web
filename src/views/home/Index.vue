@@ -16,20 +16,9 @@
     mixins: [
       LoadSections([
         'hero',
-        'about-our-product',
-        'features',
-        'marketing',
-        'theme-features',
-        'recent-works',
-        'contact-us',
         'customer-reviews',
         'affiliates',
-        'news',
-        'social-media',
-        'newsletter',
         'info-alt',
-        'login-buyer',
-        'login-seller',
       ]),
     ],
 
