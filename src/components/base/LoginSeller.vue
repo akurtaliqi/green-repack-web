@@ -53,7 +53,7 @@
       subtitle: String,
       title: {
         type: String,
-        default: 'VOUS ÊTES UN ACHETEUR',
+        default: 'VOUS ÊTES UN VENDEUR',
       },
     },
   }

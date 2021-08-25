@@ -105,7 +105,7 @@ const router = new Router({
           path: '*',
           name: 'FourOhFour',
           component: () => import('@/views/404/Index.vue'),
-        },
+        }
       ],
     },
 

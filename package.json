@@ -7,10 +7,13 @@
     "dev": "yarn serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "postversion": "node scripts/postversion.js"
+    "postversion": "node scripts/postversion.js",
+    "start": "npm run serve",
+    "test": "npm run serve"
   },
   "dependencies": {
     "auth-helper": "^1.0.0",
+    "axios": "^0.21.1",
     "vue": "^2.6.12",
     "vue-meta": "^2.3.3",
     "vue-router": "^3.1.6",

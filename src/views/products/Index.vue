@@ -8,12 +8,13 @@
   export default {
     name: 'Products',
 
-    metaInfo: { title: 'Login' },
+    metaInfo: { title: 'Products' },
 
     extends: View,
 
     mixins: [
       LoadSections([
+        'products',
       ]),
     ],
 
