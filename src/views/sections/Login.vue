@@ -73,15 +73,15 @@
         <base-section-heading title="Vous n'avez pas de compte ?">
           Créez un compte en quelques instants
         </base-section-heading>
-        <v-col align="center">
-        <base-btn
+        <div class="text-center">
+          <base-btn
           href="mailto:shop@vuetifyjs.com?subject=Zero%20Theme%20Question"
           outlined
           target="_blank"
         >
           Créer un compte
         </base-btn>
-        </v-col>
+        </div>
       </v-container>
     </base-section>
   </v-theme-provider>

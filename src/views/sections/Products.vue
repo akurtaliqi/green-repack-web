@@ -1,102 +1,113 @@
-<!--template>
-  <div class="list row">
-    <div class="col-md-8">
-      <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Search by title"
-          v-model="title"/>
-        <div class="input-group-append">
-          <button class="btn btn-outline-secondary" type="button"
-            @click="searchTitle"
-          >
-            Search
-          </button>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <h4>Tutorials List</h4>
-      <ul class="list-group">
-        <li class="list-group-item"
-          :class="{ active: index == currentIndex }"
-          v-for="(tutorial, index) in tutorials"
-          :key="index"
-          @click="setActiveTutorial(tutorial, index)"
-        >
-          {{ tutorial.title }}
-        </li>
-      </ul>
-
-      <button class="m-3 btn btn-sm btn-danger" @click="removeAllTutorials">
-        Remove All
-      </button>
-    </div>
-    <div class="col-md-6">
-      <div v-if="currentTutorial">
-        <h4>Tutorial</h4>
-        <div>
-          <label><strong>Title:</strong></label> {{ currentTutorial.title }}
-        </div>
-        <div>
-          <label><strong>Description:</strong></label> {{ currentTutorial.description }}
-        </div>
-        <div>
-          <label><strong>Status:</strong></label> {{ currentTutorial.published ? "Published" : "Pending" }}
-        </div>
-
-        <a class="badge badge-warning"
-          :href="'/tutorials/' + currentTutorial.id"
-        >
-          Edit
-        </a>
-      </div>
-      <div v-else>
-        <br />
-        <p>Please click on a Tutorial...</p>
-      </div>
-    </div>
-  </div>
-</template-->
 <template>
-  <v-simple-table>
-    <template v-slot:default>
-      <thead>
-        <tr>
-          <th class="text-left">
-            Name
-          </th>
-          <th class="text-left">
-            Description
-          </th>
-          <th class="text-left">
-            Marque
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="item in tutorials"
-          :key="item.name"
-        >
-          <td>{{ item.name }}</td>
-          <td>{{ item.description }}</td>
-          <td>{{ item.brand }}</td>
-        </tr>
-      </tbody>
-    </template>
-  </v-simple-table>
+    <v-container>
+      <div
+        v-for="(field, index) in fields"
+        :key="field.id">
+        <!--div class="display-1">{{ field.title }}</div-->
+        <v-data-iterator
+          hide-default-footer
+          :items="tutorials"
+          :items-per-page.sync="itemsPerPage"
+          :page.sync="paginations[index].page"
+          @page-count="paginations[index].pageCount = $event">
+          <template v-slot:default="{ items }">
+            <div class="menu">
+                <button v-for="(category, index) in categories" @click="filter(category)" :key="category.name" :class="{selected: selectedCat === category}">Category {{index + 1}}</button>
+                <button @click="filter('all')" :class="{selected: selectedCat === 'all'}">All</button>
+            </div>
+            <!--div v-if="selectedCat === preview.cat || selectedCat === 'all'" v-bind:key="category.name"  v-for="preview in previews" :class="'preview ' + preview.cat">
+            </div-->
+            <v-row>
+              <v-col
+                v-for="item in items"
+                :key="item.name">
+                <v-card
+                max-width="350"
+                >
+                    <v-img>
+                        <v-img :src="require(`@/assets/products-1.png`)" />
+                    </v-img>
+
+                  <v-card-title class="subheading font-weight-bold">
+                    {{ item.name }}
+                  </v-card-title>
+                  <v-divider></v-divider>
+                  <v-list dense>
+                    <v-list-item>
+                      <v-list-item-content>Marque:</v-list-item-content>
+                      <v-list-item-content class="align-end">
+                        {{ item.brand }}
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item>
+                      <v-list-item-content>Description:</v-list-item-content>
+                      <v-list-item-content class="align-end">
+                        {{ item.description }}
+                      </v-list-item-content>
+                    </v-list-item>
+
+                    <v-expansion-panels>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>Caractéristiques techniques</v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                            {{ item.description }}
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                    <v-card-actions>
+                    <v-btn 
+                    text 
+                    outlined
+                    color="primary accent-2"
+                    plain
+                    elevation="2"
+                    @click="editTutorial(item._id)"
+                    v-if="currentUserId == buyerId "
+                    >
+                        Modifier
+                    </v-btn>
+                    <v-btn 
+                    text 
+                    outlined
+                    color="primary accent-2"
+                    plain
+                    elevation="2"
+                    >
+                        Acheter
+                    </v-btn>
+                    </v-card-actions>
+                  </v-list>
+                </v-card>
+              </v-col>
+            </v-row>
+          </template>
+          <template v-slot:footer>
+            <v-pagination
+              v-model="paginations[index].page"
+              :length="paginations[index].pageCount">
+            </v-pagination>
+          </template>
+        </v-data-iterator>
+      </div>
+    </v-container>
 </template>
 
 <script>
 import ProductServices from '../../services/ProductServices.js';
 
 export default {
-  name: "tutorials-list",
+  name: "SectionProduct",
   data() {
     return {
       tutorials: [],
       currentTutorial: null,
       currentIndex: -1,
       title: "",
+      itemsPerPage: 20,
+    paginations: [],
+    fields: [],
+    buyerId: null,
+    currentUserId: null,
     };
   },
   methods: {
@@ -142,18 +153,33 @@ export default {
         .catch(e => {
           console.log(e);
         });
+    },
+
+    editTutorial(id) {
+      this.$router.push({ name: "tutorial-details", params: { id: id } });
+    },
+
+  },
+  watch: {
+    fields(fields) {
+      this.paginations = fields.map(() => ({
+        page: 1,
+        pageCount: 0
+      }))
     }
   },
   mounted() {
     this.retrieveTutorials();
+    this.fields = [
+    	{
+        id: '1',
+        title: 'Main'
+      }
+    ]
   }
 };
 </script>
 
-<style>
-.list {
-  text-align: left;
-  max-width: 750px;
-  margin: auto;
-}
+<style scoped>
+
 </style>

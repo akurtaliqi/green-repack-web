@@ -99,7 +99,12 @@ const router = new Router({
           path: 'products',
           name: 'Products',
           component: () => import('@/views/products/Index.vue'),
-          meta: { src: require('@/assets/contact.jpg') },
+          meta: { src: require('@/assets/gallery.jpg') },
+        },
+        {
+          path: "/products/:id",
+          name: "tutorial-details",
+          component: () => import('@/views/sections/Product.vue'),
         },
         {
           path: '*',

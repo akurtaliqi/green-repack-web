@@ -37,8 +37,9 @@
     props: {
       height: [Number, String],
       width: [Number, String],
-      subtitle: String,
-      title: String,
+      name: String,
+      description: String,
+      brand: String,
     },
   }
 </script>

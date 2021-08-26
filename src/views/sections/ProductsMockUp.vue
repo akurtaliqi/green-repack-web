@@ -1,0 +1,222 @@
+<!--template>
+  <div class="list row">
+    <div class="col-md-8">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search by title"
+          v-model="title"/>
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button"
+            @click="searchTitle"
+          >
+            Search
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h4>Tutorials List</h4>
+      <ul class="list-group">
+        <li class="list-group-item"
+          :class="{ active: index == currentIndex }"
+          v-for="(tutorial, index) in tutorials"
+          :key="index"
+          @click="setActiveTutorial(tutorial, index)"
+        >
+          {{ tutorial.title }}
+        </li>
+      </ul>
+
+      <button class="m-3 btn btn-sm btn-danger" @click="removeAllTutorials">
+        Remove All
+      </button>
+    </div>
+    <div class="col-md-6">
+      <div v-if="currentTutorial">
+        <h4>Tutorial</h4>
+        <div>
+          <label><strong>Title:</strong></label> {{ currentTutorial.title }}
+        </div>
+        <div>
+          <label><strong>Description:</strong></label> {{ currentTutorial.description }}
+        </div>
+        <div>
+          <label><strong>Status:</strong></label> {{ currentTutorial.published ? "Published" : "Pending" }}
+        </div>
+
+        <a class="badge badge-warning"
+          :href="'/tutorials/' + currentTutorial.id"
+        >
+          Edit
+        </a>
+      </div>
+      <div v-else>
+        <br />
+        <p>Please click on a Tutorial...</p>
+      </div>
+    </div>
+  </div>
+</template-->
+<!--template>
+  <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-left">
+            Name
+          </th>
+          <th class="text-left">
+            Description
+          </th>
+          <th class="text-left">
+            Marque
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="item in tutorials"
+          :key="item.name"
+        >
+          <td>{{ item.name }}</td>
+          <td>{{ item.description }}</td>
+          <td>{{ item.brand }}</td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+</template-->
+
+<!--template>
+  <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-left">
+            Name
+          </th>
+          <th class="text-left">
+            Calories
+          </th>
+          <th class="text-left">
+            Brand
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="item in tutorials"
+          :key="item.name"
+        >
+          <td>{{ item.name }}</td>
+          <td>{{ item.description }}</td>
+          <td>{{ item.brand }}</td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+</template-->
+<template>
+  <v-row>
+    <v-col
+      v-for="n in tutorials"
+      :key="n"
+      class="d-flex child-flex"
+      cols="4"
+    >
+      <v-img
+        :src="require(`@/assets/project-1.jpg`)"
+        :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+        aspect-ratio="1"
+        class="grey lighten-2"
+      >
+        <template v-slot:placeholder>
+          <v-row
+            class="fill-height ma-0"
+            align="center"
+            justify="center"
+          >
+            <v-col
+              v-for="[name] of tutorials"
+              :key="name"
+              cols="6"
+              md="3"
+            >
+            </v-col>
+          </v-row>
+        </template>
+      </v-img>
+    </v-col>
+  </v-row>
+</template>
+
+<script>
+import ProductServices from '../../services/ProductServices.js';
+
+export default {
+  name: "SectionProductsMockUp",
+  data() {
+    return {
+      tutorials: [],
+      currentTutorial: null,
+      currentIndex: -1,
+      title: "",
+    };
+  },
+  methods: {
+    retrieveTutorials() {
+      ProductServices.getAll()
+        .then(response => {
+          this.tutorials = response.data;
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+
+    refreshList() {
+      this.retrieveTutorials();
+      this.currentTutorial = null;
+      this.currentIndex = -1;
+    },
+
+    setActiveTutorial(tutorial, index) {
+      this.currentTutorial = tutorial;
+      this.currentIndex = index;
+    },
+
+    removeAllTutorials() {
+      TutorialDataService.deleteAll()
+        .then(response => {
+          console.log(response.data);
+          this.refreshList();
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+    
+    searchTitle() {
+      TutorialDataService.findByTitle(this.title)
+        .then(response => {
+          this.tutorials = response.data;
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    }
+  },
+  mounted() {
+    this.retrieveTutorials();
+  }
+};
+</script>
+
+<style>
+.list {
+  text-align: left;
+  max-width: 750px;
+  margin: auto;
+}
+</style>

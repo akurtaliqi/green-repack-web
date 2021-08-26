@@ -82,18 +82,9 @@
     },
 
     props: {
-      features: {
-        type: Array,
-        default: () => ([]),
-      },
-      price: [Number, String],
-      subtitle: String,
-      title: String,
-      interval: {
-        type: String,
-        required: true,
-      },
-      value: Boolean,
+      name: String,
+      description: String,
+      brand: String,
     },
 
     computed: {
