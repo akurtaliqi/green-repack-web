@@ -8,13 +8,13 @@
   export default {
     name: 'SellOffers',
 
-    metaInfo: { title: 'Mes offres d\'achat' },
+    metaInfo: { title: 'Sell Offers' },
 
     extends: View,
 
     mixins: [
       LoadSections([
-          'SectionSellOffers'
+        'sell-offers',
       ]),
     ],
   }

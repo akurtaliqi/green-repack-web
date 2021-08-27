@@ -1,11 +1,14 @@
 <template>
-    <v-container>
-      <div>sell offers</div>
-    </v-container>
+<base-section id="sell-offers">
+prout
+</base-section>
 </template>
 
 <script>
-export default {
-  name: "SellOffers",
-}
+  export default {
+    name: 'SectionSelloffers',
+  }
 </script>
+
+<style lang="sass">
+</style>

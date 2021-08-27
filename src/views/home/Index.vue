@@ -16,7 +16,6 @@
     mixins: [
       LoadSections([
         'hero',
-        'customer-reviews',
         'affiliates',
         'info-alt',
       ]),

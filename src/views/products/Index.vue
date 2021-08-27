@@ -8,21 +8,15 @@
   export default {
     name: 'Products',
 
-    metaInfo: { title: 'Products' },
+    metaInfo: { title: 'Tous nos produits' },
 
     extends: View,
 
     mixins: [
       LoadSections([
+        'hero-alt',
         'products',
       ]),
     ],
-
-    props: {
-      id: {
-        type: String,
-        default: 'recent-works',
-      },
-    },
   }
 </script>

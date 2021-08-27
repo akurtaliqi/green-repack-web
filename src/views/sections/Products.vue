@@ -6,8 +6,9 @@
         <!--div class="display-1">{{ field.title }}</div-->
         <v-data-iterator
           hide-default-footer
-          :items="tutorials"
+          :items="products"
           :items-per-page.sync="itemsPerPage"
+          no-data-text="Aucun produit à afficher"
           :page.sync="paginations[index].page"
           @page-count="paginations[index].pageCount = $event">
           <template v-slot:default="{ items }">
@@ -52,7 +53,7 @@
                         <v-expansion-panel>
                             <v-expansion-panel-header>Caractéristiques techniques</v-expansion-panel-header>
                             <v-expansion-panel-content>
-                            {{ item.description }}
+                            {{ item.features }}
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                     </v-expansion-panels>
@@ -63,8 +64,7 @@
                     color="primary accent-2"
                     plain
                     elevation="2"
-                    @click="editTutorial(item._id)"
-                    v-if="currentUserId == buyerId "
+                    @click="editProduct(item._id)"
                     >
                         Modifier
                     </v-btn>
@@ -98,14 +98,14 @@
 import ProductServices from '../../services/ProductServices.js';
 
 export default {
-  name: "SectionProduct",
+  name: "SectionProducts",
   data() {
     return {
-      tutorials: [],
-      currentTutorial: null,
-      currentIndex: -1,
-      title: "",
-      itemsPerPage: 20,
+    products: [],  
+    currentProduct: null,
+    currentIndex: -1,
+    title: "",
+    itemsPerPage: 20,
     paginations: [],
     fields: [],
     buyerId: null,
@@ -113,10 +113,10 @@ export default {
     };
   },
   methods: {
-    retrieveTutorials() {
+    retrieveProducts() {
       ProductServices.getAll()
         .then(response => {
-          this.tutorials = response.data;
+          this.products = response.data;
           console.log(response.data);
         })
         .catch(e => {
@@ -125,18 +125,18 @@ export default {
     },
 
     refreshList() {
-      this.retrieveTutorials();
-      this.currentTutorial = null;
+      this.retrieveProducts();
+      this.currentProduct = null;
       this.currentIndex = -1;
     },
 
-    setActiveTutorial(tutorial, index) {
-      this.currentTutorial = tutorial;
+    setActiveProduct(product, index) {
+      this.currentProduct = product;
       this.currentIndex = index;
     },
 
-    removeAllTutorials() {
-      TutorialDataService.deleteAll()
+    removeAllProducts() {
+      ProductServices.deleteAll()
         .then(response => {
           console.log(response.data);
           this.refreshList();
@@ -146,10 +146,10 @@ export default {
         });
     },
     
-    searchTitle() {
-      TutorialDataService.findByTitle(this.title)
+    searchProductByCategory() {
+      ProductServices.findByProductCategory(this.categoryId)
         .then(response => {
-          this.tutorials = response.data;
+          this.products = response.data;
           console.log(response.data);
         })
         .catch(e => {
@@ -157,8 +157,8 @@ export default {
         });
     },
 
-    editTutorial(id) {
-      this.$router.push({ name: "tutorial-details", params: { id: id } });
+    editProduct(id) {
+      this.$router.push({ name: "product-details", params: { id: id } });
     },
 
   },
@@ -171,7 +171,7 @@ export default {
     }
   },
   mounted() {
-    this.retrieveTutorials();
+    this.retrieveProducts();
     this.fields = [
     	{
         id: '1',

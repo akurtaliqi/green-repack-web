@@ -16,13 +16,7 @@
       LoadSections([
         'hero-alt',
         'about-our-product',
-        'customer-reviews',
-        'we-help-your-success',
-        'info-graph',
-        'theme-features',
         'affiliates',
-        'marketing',
-        'newsletter',
         'info-alt',
       ]),
     ],
