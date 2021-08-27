@@ -67,6 +67,7 @@
         'Login',
         'About',
         'Contact',
+        'Mes offres d\'achat'
       ],
     }),
   }

@@ -11,11 +11,11 @@
           :page.sync="paginations[index].page"
           @page-count="paginations[index].pageCount = $event">
           <template v-slot:default="{ items }">
-            <div class="menu">
+            <!--div class="menu">
                 <button v-for="(category, index) in categories" @click="filter(category)" :key="category.name" :class="{selected: selectedCat === category}">Category {{index + 1}}</button>
                 <button @click="filter('all')" :class="{selected: selectedCat === 'all'}">All</button>
             </div>
-            <!--div v-if="selectedCat === preview.cat || selectedCat === 'all'" v-bind:key="category.name"  v-for="preview in previews" :class="'preview ' + preview.cat">
+            <div v-if="selectedCat === preview.cat || selectedCat === 'all'" v-bind:key="category.name"  v-for="preview in previews" :class="'preview ' + preview.cat">
             </div-->
             <v-row>
               <v-col
@@ -45,8 +45,10 @@
                         {{ item.description }}
                       </v-list-item-content>
                     </v-list-item>
-
-                    <v-expansion-panels>
+                   
+                    <v-expansion-panels
+                    flat
+                    >
                         <v-expansion-panel>
                             <v-expansion-panel-header>Caractéristiques techniques</v-expansion-panel-header>
                             <v-expansion-panel-content>
@@ -54,7 +56,7 @@
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                     </v-expansion-panels>
-                    <v-card-actions>
+                     <v-card-actions>
                     <v-btn 
                     text 
                     outlined
@@ -181,5 +183,5 @@ export default {
 </script>
 
 <style scoped>
-
+.v-expansion-panel-header { padding: 16px !important; }
 </style>

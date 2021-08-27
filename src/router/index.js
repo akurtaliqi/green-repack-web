@@ -107,6 +107,11 @@ const router = new Router({
           component: () => import('@/views/sections/Product.vue'),
         },
         {
+          path: "/sell-offers",
+          name: "sell-offers",
+          component: () => import('@/views/sell-offers/Index.vue'),
+        },
+        {
           path: '*',
           name: 'FourOhFour',
           component: () => import('@/views/404/Index.vue'),
