@@ -90,14 +90,6 @@
 <script>
   export default {
     name: 'Login',
-
-    data: () => ({
-      tab: 'All',
-      tabs: [
-        'Connection acheteur',
-        'Connection marchand',
-      ],
-    }),
   }
 </script>
 

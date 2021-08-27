@@ -62,11 +62,9 @@
       drawer: null,
       items: [
         'Home',
-        'Gallery',
         'Products',
         'Login',
         'About',
-        'Contact',
         'Mes offres d\'achat'
       ],
     }),

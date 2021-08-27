@@ -45,8 +45,6 @@
     name: 'SectionBusinessInfo',
 
     components: {
-      InfoFeatures: () => import('@/components/InfoFeatures'),
-      Instagram: () => import('@/components/Instagram'),
     },
   }
 </script>
