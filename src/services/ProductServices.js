@@ -8,6 +8,10 @@ class ProductServices {
   get (id) {
     return http.get(`/product/${id}`);
   }
+
+  createProduct (id) {
+    return http.post(`/`);
+  }
 }
 
 export default new ProductServices();

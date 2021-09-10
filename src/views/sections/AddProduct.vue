@@ -6,130 +6,184 @@
         />
 
         <v-container>
-        <v-form
-        ref="form"
-        v-model="valid"
-        lazy-validation
-        >
-        <v-text-field
-        v-model="title"
-        :counter="10"
-        :rules="nameRules"
-        label="Titre"
-        required
-        ></v-text-field>
+            <v-form
+            ref="form"
+            v-model="valid"
+            lazy-validation
+            >
+                <v-text-field
+                v-model="title"
+                :counter="10"
+                :rules="nameRules"
+                label="Titre"
+                required
+                ></v-text-field>
 
-        <v-text-field
-        v-model="description"
-        :counter="10"
-        label="Description"
-        required
-        ></v-text-field>
-        
-        <v-text-field
-        v-model="brand"
-        :counter="20"
-        label="Marque"
-        required
-        ></v-text-field>
+                <v-text-field
+                v-model="description"
+                :counter="10"
+                label="Description"
+                required
+                ></v-text-field>
+                
+                <v-text-field
+                v-model="brand"
+                :counter="20"
+                label="Marque"
+                required
+                ></v-text-field>
 
-        <v-text-field
-        v-model="features"
-        :counter="10"
-        label="Caractéristiques"
-        required
-        ></v-text-field>
+                <v-text-field
+                v-model="features"
+                :counter="10"
+                label="Caractéristiques"
+                required
+                ></v-text-field>
 
-        <v-text-field
-        v-model="state"
-        :counter="10"
-        label="État"
-        required
-        ></v-text-field>
+                <v-text-field
+                v-model="state"
+                :counter="10"
+                label="État"
+                required
+                ></v-text-field>
 
-        <v-select
-        v-model="select"
-        :items="items"
-        :rules="[v => !!v || 'Item is required']"
-        label="Catégorie"
-        required
-        ></v-select>
+                <v-select
+                :items="categories"
+                name="category"
+                label="Select a category"
+                v-model="category"
+                required
+                item-value="_id" 
+                item-text="name"
+                >
 
-        <v-file-input
-        show-size
-        label="Image"
-        ></v-file-input>
+                <template v-slot:item="{item}">
+                    {{item.name}}
+                </template>    
+                <template v-slot:selection="{item}">
+                    {{item.name}}
+                </template>
+                </v-select>
+                
 
-        <v-checkbox
-        v-model="checkbox"
-        :rules="[v => !!v || 'You must agree to continue!']"
-        label="Do you agree?"
-        required
-        ></v-checkbox>
+                <v-file-input
+                show-size
+                label="Image"
+                ></v-file-input>
 
-        <v-btn
-        :disabled="!valid"
-        color="success"
-        class="mr-4"
-        @click="validate"
-        >
-        Validate
-        </v-btn>
-
-        <v-btn
-        color="error"
-        class="mr-4"
-        @click="reset"
-        >
-        Reset Form
-        </v-btn>
-
-        <v-btn
-        color="warning"
-        @click="resetValidation"
-        >
-        Reset Validation
-        </v-btn>
-    </v-form>
+                <!--v-checkbox
+                v-model="checkbox"
+                :rules="[v => !!v || 'You must agree to continue!']"
+                label="Do you agree?"
+                required
+                ></v-checkbox-->
+                <v-divider class="my-6" />
+                <v-btn
+                :disabled="!valid"
+                color="success"
+                class="mr-4"
+                @click="validate"
+                >
+                Validate
+                </v-btn>
+    
+                <v-btn
+                color="error"
+                class="mr-4"
+                @click="reset"
+                >
+                Reset Form
+                </v-btn>
+            </v-form>
         </v-container>
     </base-section>
 </template>
 
 <script>
+  import ProductCategoryServices from '../../services/ProductCategoryService.js';
+  import ProductServices from '../../services/ProductServices.js';
   export default {
     name: 'SectionAddProduct',
-    data: () => ({
+    data() {
+        return {
+        nameRules: [
+            v => !!v || 'Name is required',
+            v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+        ],
+          valid: true,
+          title: '',
+          description: '',
+          brand: '',
+          features: '',
+          state: '',
+          name: '',
+          category: '',
+          categoryId: '',
+          selectedId: '',
+          categories: [],
+        }
+    },
+    /*data: () => ({
       valid: true,
-      name: '',
+      title: '',
+      description: '',
+      brand: '',
+      features: '',
+      state: '',
+      categoryId: '',   
       nameRules: [
         v => !!v || 'Name is required',
         v => (v && v.length <= 10) || 'Name must be less than 10 characters',
       ],
-      email: '',
+      /*email: '',
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
       ],
       select: null,
-      items: [
-        'Item 1',
-        'Item 2',
-        'Item 3',
-        'Item 4',
-      ],
+      categories: [],
       checkbox: false,
-    }),
+    }),*/
 
     methods: {
+      retrieveProductCategories() {
+      ProductCategoryServices.getAll()
+        .then(response => {
+          this.categories = response.data;
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      },
       validate () {
         this.$refs.form.validate()
       },
       reset () {
         this.$refs.form.reset()
       },
-      resetValidation () {
-        this.$refs.form.resetValidation()
-      },
+
+        selectId(e) {
+        this.selectedId = e.id
+        console.log(this.selectedId)
+        }
+
+
+      
+
+      /*addProduct() {
+      ProductServices.createProduct()
+        .then(response => {
+          console.log(response.data);
+          this.refreshList();
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      },*/
+    },
+    mounted() {
+        this.retrieveProductCategories();
     },
   }
 </script>

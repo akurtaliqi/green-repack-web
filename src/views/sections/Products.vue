@@ -104,7 +104,7 @@ export default {
     products: [],  
     currentProduct: null,
     currentIndex: -1,
-    title: "",
+    title: '',
     itemsPerPage: 20,
     paginations: [],
     fields: [],
