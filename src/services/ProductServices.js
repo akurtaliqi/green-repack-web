@@ -1,11 +1,11 @@
 import http from '../http-common/http-common';
 
 class ProductServices {
-  getAll() {
+  getAll () {
     return http.get("/product");
   }
 
-  get(id) {
+  get (id) {
     return http.get(`/product/${id}`);
   }
 }

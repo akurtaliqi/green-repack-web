@@ -7,7 +7,7 @@
       color="primary"
     />
 
-    <form @submit.prevent="submit()">
+    <form @submit.prevent="loginSeller">
       <input
         label="Email"
         v-model="email"
@@ -46,6 +46,13 @@
   export default {
     name: 'LoginSeller',
 
+    data() {
+      return {
+      email: "",  
+      password: "",
+      };
+    },
+
     // Injected from the Vuetify Themeable mixin
     inject: ['theme'],
 
@@ -53,18 +60,46 @@
       subtitle: String,
       title: {
         type: String,
-        default: 'VOUS ÊTES UN VENDEUR',
+        default: 'YOU ARE A SELLER',
       },
     },
+
+    methods : {
+        async loginSeller () {
+          const response = await fetch ("http://localhost:3000/api/seller/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: this.email,
+              password: this.password,
+            }),
+        });
+        const {token } = await response.json();
+        if (token) {
+          this.$router.push("/");
+        } else {
+          // error
+          console.log("Error", response);
+        }
+        /*if (response.data.accessToken) {
+          this.$router.push("/");
+        } else {
+          // error
+          console.log("Error", response);
+        }*/
+      },
+    }
   }
 </script>
 
 <style scoped>
-    input {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border-radius: 3px;
-        background-color: white;
-    }
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 3px;
+    background-color: white;
+  }
 </style>

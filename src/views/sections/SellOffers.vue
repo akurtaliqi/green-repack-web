@@ -1,12 +1,13 @@
 <template>
 <base-section id="sell-offers">
-prout
+    Sell offer section
 </base-section>
 </template>
 
 <script>
   export default {
     name: 'SectionSelloffers',
+    // retrieve products from db where idUser == user connected and product attrib sellOfferAccept == false
   }
 </script>
 

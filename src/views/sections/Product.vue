@@ -1,24 +1,24 @@
 <template>
-  <div v-if="currentTutorial" class="edit-form py-3">
+  <div v-if="currentProduct" class="edit-form py-3">
     <p class="headline">Modifier votre produit</p>
 
     <v-form ref="form" lazy-validation>
       <v-text-field
-        v-model="currentTutorial.name"
+        v-model="currentProduct.name"
         :rules="[(v) => !!v || 'Title is required']"
         label="Title"
         required
       ></v-text-field>
 
       <v-text-field
-        v-model="currentTutorial.brand"
+        v-model="currentProduct.brand"
         :rules="[(v) => !!v || 'Description is required']"
         label="Description"
         required
       ></v-text-field>
 
       <v-text-field
-        v-model="currentTutorial.description"
+        v-model="currentProduct.description"
         :rules="[(v) => !!v || 'Description is required']"
         label="Description"
         required
@@ -143,7 +143,7 @@ export default {
   name: "tutorial",
   data() {
     return {
-      currentTutorial: null,
+      currentProduct: null,
       message: "",
     };
   },
@@ -151,7 +151,7 @@ export default {
     getTutorial(id) {
       ProductServices.get(id)
         .then((response) => {
-          this.currentTutorial = response.data;
+          this.currentProduct = response.data;
           console.log(response.data);
         })
         .catch((e) => {
@@ -161,15 +161,15 @@ export default {
 
     updatePublished(status) {
       var data = {
-        id: this.currentTutorial.id,
-        name: this.currentTutorial.name,
-        description: this.currentTutorial.description,
+        id: this.currentProduct.id,
+        name: this.currentProduct.name,
+        description: this.currentProduct.description,
         published: status,
       };
 
-      ProductServices.update(this.currentTutorial.id, data)
+      ProductServices.update(this.currentProduct.id, data)
         .then((response) => {
-          this.currentTutorial.published = status;
+          this.currentProduct.published = status;
           console.log(response.data);
         })
         .catch((e) => {
@@ -178,7 +178,7 @@ export default {
     },
 
     updateTutorial() {
-      ProductServices.update(this.currentTutorial.id, this.currentTutorial)
+      ProductServices.update(this.currentProduct.id, this.currentProduct)
         .then((response) => {
           console.log(response.data);
           this.message = "The tutorial was updated successfully!";
@@ -189,7 +189,7 @@ export default {
     },
 
     deleteTutorial() {
-      ProductServices.delete(this.currentTutorial.id)
+      ProductServices.delete(this.currentProduct.id)
         .then((response) => {
           console.log(response.data);
           this.$router.push({ name: "tutorials" });

@@ -41,7 +41,7 @@
 
 <script>
   export default {
-    name: 'LoginBuyer',
+    name: 'LoginAdmin',
 
     // Injected from the Vuetify Themeable mixin
     inject: ['theme'],
@@ -50,7 +50,7 @@
       subtitle: String,
       title: {
         type: String,
-        default: 'YOU ARE A BUYER',
+        default: 'ACCÈS AU PANNEAU D\'ADMINISTRATION',
       },
     },
     data() {

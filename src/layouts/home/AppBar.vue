@@ -22,7 +22,7 @@
           optional
           background-color="transparent"
         >
-          <v-tab
+          <!--v-tab
             v-for="(name, i) in items"
             :key="i"
             :to="{ name }"
@@ -33,6 +33,30 @@
             text
           >
             {{ name }}
+          </v-tab-->
+          <v-tab
+            class="font-weight-bold"
+            min-width="96"
+            text
+            href="/"
+          >
+            Home
+          </v-tab>
+          <v-tab
+            class="font-weight-bold"
+            min-width="96"
+            text
+            href="/selloffers"
+          >
+            Add new product
+          </v-tab>
+          <v-tab
+            class="font-weight-bold"
+            min-width="96"
+            text
+            href="/login"
+          >
+            Log out
           </v-tab>
         </v-tabs>
       </div>
@@ -51,6 +75,7 @@
 </template>
 
 <script>
+  
   export default {
     name: 'HomeAppBar',
 
@@ -61,13 +86,12 @@
     data: () => ({
       drawer: null,
       items: [
-        'Home',
-        'Products',
-        'Login',
-        'About',
-        'Mes offres de ventes'
       ],
     }),
+
+    methods: {
+     
+    },
   }
 </script>
 

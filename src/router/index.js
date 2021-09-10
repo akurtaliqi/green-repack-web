@@ -35,14 +35,10 @@ const router = new Router({
           component: () => import('@/views/login/Index.vue'),
         },
         {
-          path: 'login',
-          name: 'Login',
-          component: () => import('@/views/login/Index.vue'),
-        },
-        {
           path: 'products',
           name: 'Products',
           component: () => import('@/views/products/Index.vue'),
+          meta: { requiresAuth: true }
         },
         {
           path: "/products/:id",
@@ -56,10 +52,15 @@ const router = new Router({
           meta: { src: require('@/assets/about.jpg') },
         },
         {
+          path: 'admin',
+          name: 'Admin',
+          component: () => import('@/views/admin/Index.vue'),
+        },
+        {
           path: '*',
           name: 'FourOhFour',
           component: () => import('@/views/404/Index.vue'),
-        }
+        },
       ],
     },
 

@@ -70,8 +70,7 @@
           </v-col>
         </v-row>
         <v-divider class="my-6" />
-        <base-section-heading title="Vous n'avez pas de compte ?">
-          Créez un compte en quelques instants
+        <base-section-heading title="DON'T HAVE AN ACCOUNT YET ?">
         </base-section-heading>
         <div class="text-center">
           <base-btn
@@ -79,7 +78,7 @@
           outlined
           target="_blank"
         >
-          Créer un compte
+          Create an account
         </base-btn>
         </div>
       </v-container>
