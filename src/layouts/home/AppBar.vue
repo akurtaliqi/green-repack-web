@@ -22,7 +22,7 @@
           optional
           background-color="transparent"
         >
-          <!--v-tab
+          <v-tab
             v-for="(name, i) in items"
             :key="i"
             :to="{ name }"
@@ -33,31 +33,16 @@
             text
           >
             {{ name }}
-          </v-tab-->
-          <v-tab
+          </v-tab>
+          <!--v-tab
+            v-if
             class="font-weight-bold"
             min-width="96"
             text
             href="/"
           >
             Home
-          </v-tab>
-          <v-tab
-            class="font-weight-bold"
-            min-width="96"
-            text
-            href="/selloffers"
-          >
-            Add new product
-          </v-tab>
-          <v-tab
-            class="font-weight-bold"
-            min-width="96"
-            text
-            href="/login"
-          >
-            Log out
-          </v-tab>
+          </v-tab-->
         </v-tabs>
       </div>
 
@@ -86,6 +71,14 @@
     data: () => ({
       drawer: null,
       items: [
+        // the label below must be the same as name in index.js
+        'Home',
+        'About',
+        'Login',
+        'Products',
+        'Mes offres de ventes',
+        'Vendre un produit',
+        'Admin',
       ],
     }),
 
