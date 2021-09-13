@@ -13,16 +13,26 @@
 </template>
 
 <script>
-  export default {
-    name: 'BaseView',
-
-    props: {
-      id: {
-        type: String,
-        default: 'view',
-      },
+import { LOGINUSERFROMLOCALSTORAGE } from "@/store/constants";
+export default {
+  name: "BaseView",
+  props: {
+    id: {
+      type: String,
+      default: "view",
     },
-
-    data: () => ({ sections: [] }),
-  }
+  },
+  data: () => ({ sections: [] }),
+  mounted() {
+    this.LoginFromCache();
+  },
+  methods: {
+    LoginFromCache() {
+      this.$store.dispatch(
+        `Auth/${LOGINUSERFROMLOCALSTORAGE}`,
+        JSON.parse(localStorage.getItem("token"))
+      );
+    },
+  },
+};
 </script>

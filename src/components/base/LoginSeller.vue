@@ -1,34 +1,17 @@
 <template>
   <div>
-    <base-info-card
-      :title="title"
-      :subtitle="subtitle"
-      space="4"
-      color="primary"
-    />
+    <base-info-card :title="title" :subtitle="subtitle" space="4" color="primary" />
 
-    <form @submit.prevent="loginSeller">
-      <input
-        label="Email"
-        v-model="email"
-        type="email"
-      />
+    <form @submit.prevent="submit">
+      <input v-model="email" label="Email" type="email" />
 
-      <input
-        v-model="password"
-        type="password"
-      />
+      <input v-model="password" type="password" />
 
       <!--button type="submit">Log in</button-->
 
-      <base-btn
-        :color="!theme.isDark ? 'accent' : 'white'"
-        outlined
-        type="submit"
-        >
+      <base-btn :color="!theme.isDark ? 'accent' : 'white'" outlined type="submit">
         Connexion
       </base-btn>
-
     </form>
 
     <!--base-text-field
@@ -43,63 +26,48 @@
 </template>
 
 <script>
-  export default {
-    name: 'LoginSeller',
+import { LOGINSELLERACTION } from "@/store/constants";
+export default {
+  name: "LoginSeller",
 
-    data() {
-      return {
-      email: "",  
+  props: {
+    subtitle: String,
+    title: {
+      type: String,
+      default: "VOUS ÊTES UN VENDEUR",
+    },
+  },
+  data() {
+    return {
+      email: "",
       password: "",
-      };
-    },
-
-    // Injected from the Vuetify Themeable mixin
-    inject: ['theme'],
-
-    props: {
-      subtitle: String,
-      title: {
-        type: String,
-        default: 'YOU ARE A SELLER',
-      },
-    },
-
-    methods : {
-        async loginSeller () {
-          const response = await fetch ("http://localhost:3000/api/seller/auth/login", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: this.email,
-              password: this.password,
-            }),
+    };
+  },
+  methods: {
+    async submit() {
+      this.$store
+        .dispatch(`Auth/${LOGINSELLERACTION}`, {
+          email: this.email,
+          password: this.password,
+        })
+        .then((res) => {
+          if (res) {
+            this.$router.push("/");
+          }
         });
-        const {token } = await response.json();
-        if (token) {
-          this.$router.push("/");
-        } else {
-          // error
-          console.log("Error", response);
-        }
-        /*if (response.data.accessToken) {
-          this.$router.push("/");
-        } else {
-          // error
-          console.log("Error", response);
-        }*/
-      },
-    }
-  }
+    },
+  },
+  // Injected from the Vuetify Themeable mixin
+  inject: ["theme"],
+};
 </script>
 
 <style scoped>
-  input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 3px;
-    background-color: white;
-  }
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 3px;
+  background-color: white;
+}
 </style>
