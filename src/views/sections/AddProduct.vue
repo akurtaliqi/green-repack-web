@@ -49,9 +49,8 @@
 
                 <v-select
                 :items="categories"
-                name="category"
                 label="Select a category"
-                v-model="category"
+                v-model="categoryId"
                 required
                 item-value="_id" 
                 item-text="name"
@@ -82,7 +81,7 @@
                 :disabled="!valid"
                 color="success"
                 class="mr-4"
-                @click="validate"
+                @click="addProduct()"
                 >
                 Validate
                 </v-btn>
@@ -116,10 +115,8 @@
           brand: '',
           features: '',
           state: '',
-          name: '',
-          category: '',
-          categoryId: '',
-          selectedId: '',
+          sellerId: '6128c9a35ca54e2140988b46',
+          categoryId: '6128c7724b6b0135b8150298',
           categories: [],
         }
     },
@@ -163,24 +160,27 @@
         this.$refs.form.reset()
       },
 
-        selectId(e) {
-        this.selectedId = e.id
-        console.log(this.selectedId)
+      addProduct() {
+        var data = {
+            title: this.title,
+            description: this.description,
+            brand: this.brand,
+            features: this.features,
+            state: this.state,
+            sellerId: this.sellerId,
+            categoryId: this.categoryId
         }
 
-
-      
-
-      /*addProduct() {
-      ProductServices.createProduct()
-        .then(response => {
-          console.log(response.data);
-          this.refreshList();
-        })
-        .catch(e => {
-          console.log(e);
-        });
-      },*/
+        ProductServices.createProduct(data)
+            .then(response => {
+            this.tutorial.id = response.data.id;
+            console.log(response.data);
+            this.submitted = true;
+            })
+            .catch(e => {
+            console.log(e);
+            });
+        },
     },
     mounted() {
         this.retrieveProductCategories();
