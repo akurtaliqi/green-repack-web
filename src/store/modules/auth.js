@@ -1,8 +1,11 @@
 import HTTP from "../../http-common/http-common";
+import store from '../../store'
 import {
   LOGINBUYERACTION,
   LOGINSELLERACTION,
   LOGINADMINACTION,
+  SIGNUPBUYERACTION,
+  SIGNUPFAILED,
   LOGOUTUSER,
   LOGINUSERFROMLOCALSTORAGE,
   LOGINUSERSUCCESS,
@@ -17,8 +20,18 @@ const state = {
   auth: false,
   userLoggedIn: {},
   userLogginError: {},
-  userLoggedInType: ""
+  userLoggedInType: null
 };
+
+/*export const ifAuthenticated = (to, from, next) => {
+  store.dispatch(AUTHGETTER)
+      .then(() => {
+        next()
+      })
+      .catch(() => {
+        next({ name: 'Login', query: { redirect_to: to.fullPath } })
+      })
+}*/
 // Getter functions
 const getters = {
   [AUTHGETTER]: state => {
@@ -70,6 +83,9 @@ const actions = {
       commit(LOGINUSERFAILED, error.response.data);
       return false;
     }
+  },
+  [SIGNUPBUYERACTION]: async ({ commit }, { email, password }) => {
+   //do something
   },
   [LOGINSELLERACTION]: async ({ commit }, { email, password }) => {
     try {

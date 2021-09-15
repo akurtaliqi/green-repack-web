@@ -70,15 +70,15 @@
           </v-col>
         </v-row>
         <v-divider class="my-6" />
-        <base-section-heading title="DON'T HAVE AN ACCOUNT YET ?">
+        <base-section-heading title="Pas encore de compte ?">
+        Créez un compte facilement en quelques clicks
         </base-section-heading>
         <div class="text-center">
           <base-btn
-          href="mailto:shop@vuetifyjs.com?subject=Zero%20Theme%20Question"
+          router-link to="/Signup"
           outlined
-          target="_blank"
         >
-          Create an account
+          Créer un compte
         </base-btn>
         </div>
       </v-container>

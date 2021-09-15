@@ -1,7 +1,6 @@
 // Imports
 import Vue from 'vue'
 import Router from 'vue-router'
-
 Vue.use(Router)
 
 const router = new Router({
@@ -49,7 +48,7 @@ const router = new Router({
           path: "selloffers",
           name: "Mes offres de ventes",
           component: () => import('@/views/selloffers/Index.vue'),
-          meta: { src: require('@/assets/about.jpg') },
+          // beforeEnter: ifAuthenticated
         },
         {
           path: "addproduct",

@@ -33,7 +33,9 @@
             :class="$vuetify.breakpoint.smAndDown ? 'flex-column align-start' : 'align-center'"
             class="d-flex flex-wrap"
           >
-            <base-btn>
+            <base-btn
+            router-link to="/Login"
+            >
               Connectez-vous
             </base-btn>
             <span class="font-weight-bold ml-6 mr-4 my-4">ou</span>
@@ -43,6 +45,7 @@
               height="auto"
               text
               color="white"
+              router-link to="/Signup"
             >
               Créez un compte
             </base-btn>
