@@ -29,15 +29,14 @@
           </base-body>
 
           <div
+            v-if="USERLOGGEDINTYPE === ''"
             :class="$vuetify.breakpoint.smAndDown ? 'flex-column align-start' : 'align-center'"
             class="d-flex flex-wrap"
           >
             <base-btn>
               Connectez-vous
             </base-btn>
-
             <span class="font-weight-bold ml-6 mr-4 my-4">ou</span>
-
             <base-btn
               :ripple="false"
               class="pa-1"
@@ -55,6 +54,8 @@
 </template>
 
 <script>
+import { AUTHGETTER, USERLOGGEDINTYPE } from "@/store/constants";
+import { mapGetters } from "vuex";
   export default {
     name: 'SectionHero',
 
@@ -63,6 +64,7 @@
     },
 
     computed: {
+      ...mapGetters("Auth", [AUTHGETTER, USERLOGGEDINTYPE]),
       minHeight () {
         const height = this.$vuetify.breakpoint.mdAndUp ? '100vh' : '50vh'
 

@@ -68,6 +68,7 @@
                 <v-file-input
                 show-size
                 label="Image"
+                multiple
                 ></v-file-input>
 
                 <!--v-checkbox
@@ -116,31 +117,10 @@
           features: '',
           state: '',
           sellerId: '6128c9a35ca54e2140988b46',
-          categoryId: '6128c7724b6b0135b8150298',
+          categoryId: '',
           categories: [],
         }
     },
-    /*data: () => ({
-      valid: true,
-      title: '',
-      description: '',
-      brand: '',
-      features: '',
-      state: '',
-      categoryId: '',   
-      nameRules: [
-        v => !!v || 'Name is required',
-        v => (v && v.length <= 10) || 'Name must be less than 10 characters',
-      ],
-      /*email: '',
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
-      ],
-      select: null,
-      categories: [],
-      checkbox: false,
-    }),*/
 
     methods: {
       retrieveProductCategories() {

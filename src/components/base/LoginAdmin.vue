@@ -1,45 +1,21 @@
 <template>
   <div>
-    <base-info-card
-      :title="title"
-      :subtitle="subtitle"
-      space="4"
-      color="primary"
-    />
+    <base-info-card :title="title" :subtitle="subtitle" space="4" color="primary" />
 
-    <form @submit.prevent="submit()">
-      <input
-        type="email"
-      />
+    <form @submit.prevent="submit">
+      <input v-model="username" label="Username" type="username" />
 
-      <input
-        type="password"
-      />
+      <input v-model="password" type="password" />
 
-      <!--button type="submit">Log in</button-->
-
-      <base-btn
-        :color="!theme.isDark ? 'accent' : 'white'"
-        outlined
-        type="submit"
-        >
+      <base-btn :color="!theme.isDark ? 'accent' : 'white'" outlined type="submit">
         Connexion
       </base-btn>
-
     </form>
-
-    <!--base-text-field
-      label="Email"
-      v-model="email"
-    />
-
-    <base-text-field
-      label="Password"
-    /-->
   </div>
 </template>
 
 <script>
+  import { LOGINADMINACTION } from "@/store/constants";
   export default {
     name: 'LoginAdmin',
 
@@ -56,12 +32,26 @@
     data() {
       return {
         register: {
-          email: "",
+          username: "",
           password: ""
         }
       };
     },
+    methods: {
+    async submit() {
+      this.$store
+        .dispatch(`Auth/${LOGINADMINACTION}`, {
+          username: this.username,
+          password: this.password,
+        })
+        .then((res) => {
+          if (res) {
+            this.$router.push("/");
+          }
+        });
+    },
   }
+};
 </script>
 <style scoped>
     input {

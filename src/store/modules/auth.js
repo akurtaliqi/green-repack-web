@@ -2,6 +2,7 @@ import HTTP from "../../http-common/http-common";
 import {
   LOGINBUYERACTION,
   LOGINSELLERACTION,
+  LOGINADMINACTION,
   LOGOUTUSER,
   LOGINUSERFROMLOCALSTORAGE,
   LOGINUSERSUCCESS,
@@ -78,6 +79,23 @@ const actions = {
       });
       if (response.status === 200) {
         response.data.userType = "seller";
+        commit(LOGINUSERSUCCESS, response.data);
+        return true;
+      }
+    } catch (error) {
+      console.log(error.response);
+      commit(LOGINUSERFAILED, error.response.data);
+      return false;
+    }
+  },
+  [LOGINADMINACTION]: async ({ commit }, { username, password }) => {
+    try {
+      const response = await HTTP.post("/admin/auth/login", {
+        username,
+        password
+      });
+      if (response.status === 200) {
+        response.data.userType = "admin";
         commit(LOGINUSERSUCCESS, response.data);
         return true;
       }

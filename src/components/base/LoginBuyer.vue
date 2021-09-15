@@ -47,7 +47,7 @@ export default {
     };
   },
   methods: {
-    async signUpBuyer() {
+    /*async loginBuyer() {
       try {
         const response = await this.$http.post("/api/signup", this.register);
         console.log(response);
@@ -67,7 +67,7 @@ export default {
           console.log("Error", error.data.err.message, "error");
         }
       }
-    },
+    },*/
     async submit() {
       this.$store
         .dispatch(`Auth/${LOGINBUYERACTION}`, {

@@ -58,6 +58,11 @@ const router = new Router({
           meta: { src: require('@/assets/about.jpg') },
         },
         {
+          path: 'signup',
+          name: 'SignUp',
+          component: () => import('@/views/signup/Index.vue'),
+        },
+        {
           path: 'admin',
           name: 'Admin',
           component: () => import('@/views/admin/Index.vue'),
