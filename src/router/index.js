@@ -38,7 +38,6 @@ const router = new Router({
           path: "products",
           name: "Products",
           component: () => import("@/views/products/Index.vue"),
-          meta: { requiresAuth: true, access: "buyer" }
         },
         {
           path: "/products/:id",
@@ -51,7 +50,7 @@ const router = new Router({
           name: "Mes offres de ventes",
           component: () => import("@/views/selloffers/Index.vue"),
           meta: { src: require("@/assets/about.jpg") },
-          meta: { requiresAuth: true, access: "buyer" }
+          meta: { requiresAuth: true, access: 'seller' }
         },
         {
           path: "addproduct",

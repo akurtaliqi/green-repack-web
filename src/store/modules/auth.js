@@ -23,15 +23,6 @@ const state = {
   userLoggedInType: null
 };
 
-/*export const ifAuthenticated = (to, from, next) => {
-  store.dispatch(AUTHGETTER)
-      .then(() => {
-        next()
-      })
-      .catch(() => {
-        next({ name: 'Login', query: { redirect_to: to.fullPath } })
-      })
-}*/
 // Getter functions
 const getters = {
   [AUTHGETTER]: state => {

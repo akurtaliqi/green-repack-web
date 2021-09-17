@@ -29,7 +29,7 @@
           </base-body>
 
           <div
-            v-if="USERLOGGEDINTYPE === ''"
+            v-if="USERLOGGEDINTYPE === null"
             :class="$vuetify.breakpoint.smAndDown ? 'flex-column align-start' : 'align-center'"
             class="d-flex flex-wrap"
           >
