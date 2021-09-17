@@ -57,7 +57,9 @@
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                     </v-expansion-panels>
-                     <v-card-actions>
+                    <v-card-actions
+                    v-if="USERLOGGEDINTYPE != null"
+                    >
                     <v-btn 
                     text 
                     outlined
@@ -96,6 +98,8 @@
 
 <script>
 import ProductServices from '../../services/ProductServices.js';
+import { AUTHGETTER, USERLOGGEDINTYPE } from "@/store/constants";
+import { mapGetters } from "vuex";
 
 export default {
   name: "SectionProducts",
@@ -178,7 +182,10 @@ export default {
         title: 'Main'
       }
     ]
-  }
+  },
+  computed: {
+    ...mapGetters("Auth", [AUTHGETTER, USERLOGGEDINTYPE]),
+  },
 };
 </script>
 

@@ -26,11 +26,11 @@
 
       <v-divider class="my-5"></v-divider>
 
-      <v-btn color="error" small class="mr-2" @click="deleteTutorial">
+      <v-btn color="error" small class="mr-2" @click="deleteProduct">
         Supprimer
       </v-btn>
 
-      <v-btn color="success" small class="mr-2" @click="updateTutorial">
+      <v-btn color="success" small class="mr-2" @click="updateProduct">
         Modifier
       </v-btn>
 
@@ -43,7 +43,7 @@
   </div>
 
   <div v-else>
-    <p>Please click on a Tutorial...</p>
+    <p>Please click on a Product...</p>
   </div>
 </template>
 
@@ -51,7 +51,7 @@
 import ProductServices from '../../services/ProductServices.js';
 
 export default {
-  name: "tutorial",
+  name: "product",
   data() {
     return {
       currentProduct: null,
@@ -59,7 +59,7 @@ export default {
     };
   },
   methods: {
-    getTutorial(id) {
+    getProduct(id) {
       ProductServices.get(id)
         .then((response) => {
           this.currentProduct = response.data;
@@ -88,22 +88,22 @@ export default {
         });
     },
 
-    updateTutorial() {
+    updateProduct() {
       ProductServices.update(this.currentProduct.id, this.currentProduct)
         .then((response) => {
           console.log(response.data);
-          this.message = "The tutorial was updated successfully!";
+          this.message = "The product was updated successfully!";
         })
         .catch((e) => {
           console.log(e);
         });
     },
 
-    deleteTutorial() {
+    deleteProduct() {
       ProductServices.delete(this.currentProduct.id)
         .then((response) => {
           console.log(response.data);
-          this.$router.push({ name: "tutorials" });
+          this.$router.push({ name: "products" });
         })
         .catch((e) => {
           console.log(e);
@@ -116,7 +116,7 @@ export default {
   },
   mounted() {
     this.message = "";
-    this.getTutorial(this.$route.params.id);
+    this.getProduct(this.$route.params.id);
   },
 };
 </script>
