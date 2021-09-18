@@ -33,7 +33,7 @@ const actions = {
       const response = await HTTP.post("/product", payload, {
         "Content-type": undefined
       });
-      if (response.status === 200) {
+      if (response.status === 201) {
         commit(PRODUCTCREATEDSUCCESS, response.data);
         return true;
       }

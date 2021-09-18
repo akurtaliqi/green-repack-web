@@ -26,11 +26,12 @@
                 max-width="350"
                 >
                     <v-img>
-                        <v-img :src="require(`@/assets/products-1.png`)" />
+                        <!--v-img :src="path + 'http:/localhost:3000/uploads/1631890694049Death-Star-icon.png'" /-->
+                        <!--img :src="'http://localhost:3000/'+'uploads/'+item.images[0]" class="img-circle" alt="Services" height="150"-->
                     </v-img>
 
                   <v-card-title class="subheading font-weight-bold">
-                    {{ item.name }}
+                    {{ item.name }}  {{ item.images[0] }}
                   </v-card-title>
                   <v-divider></v-divider>
                   <v-list dense>
@@ -112,8 +113,8 @@ export default {
     itemsPerPage: 20,
     paginations: [],
     fields: [],
-    buyerId: null,
-    currentUserId: null,
+    buyerId: '612624ab68df834028b29d96',
+    // currentUserId: null,
     };
   },
   methods: {

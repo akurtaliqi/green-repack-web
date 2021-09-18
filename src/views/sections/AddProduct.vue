@@ -6,6 +6,7 @@
       <v-form ref="form" v-model="valid" lazy-validation enctype="multipart/form-data">
         <v-text-field
           v-model="title"
+          :rules="inputBasicRule"
           label="Titre"
           required
         ></v-text-field>
@@ -13,26 +14,44 @@
         <v-text-field
           v-model="description"
           label="Description"
+          :rules="inputBasicRule"
           required
         ></v-text-field>
 
         <v-text-field
           v-model="brand"
           label="Marque"
+          :rules="inputBasicRule"
           required
         ></v-text-field>
 
         <v-text-field
           v-model="features"
           label="Caractéristiques"
+          :rules="inputBasicRule"
           required
         ></v-text-field>
 
-        <v-text-field v-model="state" label="État" required></v-text-field>
+        <v-select
+          :items="productStates"
+          label="État du produit"
+          v-model="productStateId"
+          :rules="inputBasicRule"
+          required
+          item-value="_id"
+          item-text="name"
+        >
+          <template v-slot:item="{ item }">
+            {{ item.name }}
+          </template>
+          <template v-slot:selection="{ item }">
+            {{ item.name }}
+          </template>
+        </v-select>
 
         <v-select
           :items="categories"
-          label="Select a category"
+          label="Choisissez une catégorie"
           v-model="categoryId"
           required
           item-value="_id"
@@ -46,27 +65,20 @@
           </template>
         </v-select>
 
-        <v-file-input v-model="images" multiple show-size label="Image"></v-file-input>
+        <v-file-input v-model="images" multiple show-size label="Image(s)"></v-file-input>
         <v-divider class="my-6" />
         <v-btn :disabled="!valid" color="success" class="mr-4" @click="addProduct()">
           Validate
         </v-btn>
-
         <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
       </v-form>
-      <modal v-if="showModal" @close="showModal = false">
-        <!--
-      you can use custom content here to overwrite
-      default content
-    -->
-        <h3 slot="header">custom header</h3>
-      </modal>
     </v-container>
   </base-section>
 </template>
 
 <script>
 import ProductCategoryServices from "../../services/ProductCategoryService.js";
+import ProductStateServices from "../../services/ProductStateServices.js";
 import ProductServices from "../../services/ProductServices.js";
 import { CREATE_PRODUCT_ACTION } from "@/store/constants";
 import image from "@/assets/article-1.jpg";
@@ -74,10 +86,10 @@ export default {
   name: "SectionAddProduct",
   data() {
     return {
-      /*nameRules: [
-        (v) => !!v || "Name is required",
-        (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
-      ],*/
+      inputBasicRule: [
+        (v) => !!v || "Required",
+        // (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
+      ],
       valid: true,
       title: "",
       description: "",
@@ -86,9 +98,10 @@ export default {
       state: "",
       sellerId: "6128c9a35ca54e2140988b46",
       categoryId: null,
+      productStateId: null,
+      productStates: [],
       categories: [],
       images: null,
-      showModal: false,
     };
   },
   methods: {
@@ -96,6 +109,16 @@ export default {
       ProductCategoryServices.getAll()
         .then((response) => {
           this.categories = response.data;
+          console.log(response.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    retrieveProductStates() {
+      ProductStateServices.getAll()
+        .then((response) => {
+          this.productStates = response.data;
           console.log(response.data);
         })
         .catch((e) => {
@@ -115,7 +138,7 @@ export default {
         "description",
         "brand",
         "features",
-        "state",
+        "productStateId",
         "sellerId",
         "categoryId",
         "images",
@@ -128,17 +151,15 @@ export default {
         fd.append('images${index}', file);
       });
       this.$store.dispatch(CREATE_PRODUCT_ACTION, fd).then((res) => {
-        console.log(res);
         if (res) {
-          console.log(res);
-          this.show = true
-          
+          this.reset();
         }
       });
     },
   },
   mounted() {
     this.retrieveProductCategories();
+    this.retrieveProductStates();
   },
 };
 </script>
