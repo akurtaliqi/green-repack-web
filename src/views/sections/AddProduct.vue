@@ -159,6 +159,7 @@ export default {
   },
   mounted() {
     this.retrieveProductCategories();
+    this.retrieveProductStates();
   },
 };
 </script>
