@@ -72,6 +72,15 @@
         </v-btn>
         <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
       </v-form>
+       <v-dialog v-model="showModal" max-width="500px">
+        <v-card>
+          <v-card-title> Header</v-card-title>
+          <v-card-text>it is a custom modal </v-card-text>
+          <v-card-actions>
+            <v-btn color="primary" text @click="showModal = false"> Close </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-container>
   </base-section>
 </template>
@@ -102,6 +111,7 @@ export default {
       productStates: [],
       categories: [],
       images: null,
+      showModal: false,
     };
   },
   methods: {
@@ -131,8 +141,8 @@ export default {
     reset() {
       this.$refs.form.reset();
     },
-
     addProduct() {
+      this.showModal = true;
       var data = [
         "title",
         "description",
