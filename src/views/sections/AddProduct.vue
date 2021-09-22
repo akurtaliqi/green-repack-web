@@ -67,18 +67,18 @@
 
         <v-file-input v-model="images" multiple show-size label="Image(s)"></v-file-input>
         <v-divider class="my-6" />
-        
-        <!--p v-if="errors.length">
-          <b>Please correct the following error(s):</b>
-          <ul>
-            <li v-for="error in errors">{{ error }}</li>
-          </ul>
-        </p-->
-
+        <v-alert
+          dense
+          outlined
+          type="error"
+          v-if="error"
+        >
+          Veuillez remplir tous les champs
+        </v-alert>
+        <v-btn color="warning" class="mr-4" outlined @click="reset"> Reset </v-btn>
         <v-btn :disabled="!valid" color="success" class="mr-4" @click="addProduct()">
-          Validate
+          Valider
         </v-btn>
-        <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
       </v-form>
        <v-dialog v-model="showModal" max-width="500px">
         <v-card>
@@ -126,6 +126,7 @@ export default {
       showModal: false,
       newProductId: null,
       userProfile: null,
+      error: false,
     };
   },
   methods: {
@@ -166,37 +167,38 @@ export default {
       );
     },
     addProduct() {
-       if (this.title && this.description && this.brand && this.features ) {
-        console.log('plop')
+       if (this.title && this.description && this.brand && this.features && this.categoryId && this.productStateId) {
+        this.error = false;
+        this.showModal = true;
+        this.sellerId = JSON.parse(localStorage.getItem("sellerId"));
+        var data = [
+          "title",
+          "description",
+          "brand",
+          "features",
+          "productStateId",
+          "sellerId",
+          "categoryId",
+          "images",
+        ];
+        let fd = new FormData();
+        data.map((item) => {
+          fd.append(item, this[item]);
+        });
+        this.images.map((file, index) => {
+          fd.append('images${index}', file);
+        });
+        this.$store.dispatch(CREATE_PRODUCT_ACTION, fd).then((res) => {
+          if (res) {
+            // TODO change reset
+            this.reset();
+            console.log('hello there' + res)
+          }
+        });
       } else {
-        console.log('ploup')
+        this.error = true;
       }
-      this.showModal = true;
-      this.sellerId = JSON.parse(localStorage.getItem("sellerId"));
-      var data = [
-        "title",
-        "description",
-        "brand",
-        "features",
-        "productStateId",
-        "sellerId",
-        "categoryId",
-        "images",
-      ];
-      let fd = new FormData();
-      data.map((item) => {
-        fd.append(item, this[item]);
-      });
-      this.images.map((file, index) => {
-        fd.append('images${index}', file);
-      });
-      this.$store.dispatch(CREATE_PRODUCT_ACTION, fd).then((res) => {
-        if (res) {
-          // TODO change reset
-          this.reset();
-          console.log('hello there' + res)
-        }
-      });
+      
     },
     acceptSellOffer() {
       
