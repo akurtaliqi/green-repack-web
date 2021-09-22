@@ -67,6 +67,14 @@
 
         <v-file-input v-model="images" multiple show-size label="Image(s)"></v-file-input>
         <v-divider class="my-6" />
+        
+        <!--p v-if="errors.length">
+          <b>Please correct the following error(s):</b>
+          <ul>
+            <li v-for="error in errors">{{ error }}</li>
+          </ul>
+        </p-->
+
         <v-btn :disabled="!valid" color="success" class="mr-4" @click="addProduct()">
           Validate
         </v-btn>
@@ -74,10 +82,12 @@
       </v-form>
        <v-dialog v-model="showModal" max-width="500px">
         <v-card>
-          <v-card-title> Header</v-card-title>
-          <v-card-text>it is a custom modal </v-card-text>
+          <v-card-title>Offre d'achat</v-card-title>
+          <v-card-text>L'offre d'achat pour votre produit s'élève à</v-card-text>
           <v-card-actions>
             <v-btn color="primary" text @click="showModal = false"> Close </v-btn>
+            <v-btn color="primary" text @click="acceptSellOffer()"> Accept </v-btn>
+             <v-btn color="primary" text @click="refuseSellOffer()"> Decline </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -90,6 +100,8 @@ import ProductCategoryServices from "../../services/ProductCategoryService.js";
 import ProductStateServices from "../../services/ProductStateServices.js";
 import ProductServices from "../../services/ProductServices.js";
 import { CREATE_PRODUCT_ACTION } from "@/store/constants";
+import { AUTHGETTER, LOGINUSERFROMLOCALSTORAGE, USERLOGGEDINGETTER, SELLERID, USERPROFILE } from "@/store/constants";
+import { mapGetters } from "vuex";
 import image from "@/assets/article-1.jpg";
 export default {
   name: "SectionAddProduct",
@@ -99,19 +111,21 @@ export default {
         (v) => !!v || "Required",
         // (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
       ],
-      valid: true,
+      valid: false,
       title: "",
       description: "",
       brand: "",
       features: "",
       state: "",
-      sellerId: "6128c9a35ca54e2140988b46",
+      sellerId: null,
       categoryId: null,
       productStateId: null,
       productStates: [],
       categories: [],
       images: null,
       showModal: false,
+      newProductId: null,
+      userProfile: null,
     };
   },
   methods: {
@@ -119,7 +133,7 @@ export default {
       ProductCategoryServices.getAll()
         .then((response) => {
           this.categories = response.data;
-          console.log(response.data);
+          // console.log(response.data);
         })
         .catch((e) => {
           console.log(e);
@@ -129,7 +143,7 @@ export default {
       ProductStateServices.getAll()
         .then((response) => {
           this.productStates = response.data;
-          console.log(response.data);
+          // console.log(response.data);
         })
         .catch((e) => {
           console.log(e);
@@ -141,8 +155,24 @@ export default {
     reset() {
       this.$refs.form.reset();
     },
+    LoginFromCache() {
+      this.$store.dispatch(
+        `Auth/${LOGINUSERFROMLOCALSTORAGE}`,
+        // JSON.parse(localStorage.getItem("sellerId")),
+        console.log('here'),
+        console.log(JSON.parse(localStorage.getItem("sellerId"))),
+        console.log(JSON.parse(localStorage.getItem("userProfile"))),
+        this.sellerId = JSON.parse(localStorage.getItem("sellerId")),
+      );
+    },
     addProduct() {
+       if (this.title && this.description && this.brand && this.features ) {
+        console.log('plop')
+      } else {
+        console.log('ploup')
+      }
       this.showModal = true;
+      this.sellerId = JSON.parse(localStorage.getItem("sellerId"));
       var data = [
         "title",
         "description",
@@ -162,14 +192,29 @@ export default {
       });
       this.$store.dispatch(CREATE_PRODUCT_ACTION, fd).then((res) => {
         if (res) {
+          // TODO change reset
           this.reset();
+          console.log('hello there' + res)
         }
       });
     },
+    acceptSellOffer() {
+      
+    },
+    refuseSellOffer() {
+      this.$router.push("/selloffers");
+    },
   },
+  
   mounted() {
     this.retrieveProductCategories();
     this.retrieveProductStates();
+    this.LoginFromCache();
+    console.log(this.sellerId);
+    console.log(this.userProfile);
+  },
+  computed: {
+    ...mapGetters("Auth", [AUTHGETTER, SELLERID, USERPROFILE]),
   },
 };
 </script>

@@ -13,14 +13,17 @@ import {
   LOGOUTUSERSUCCESS,
   AUTHGETTER,
   USERLOGGEDINGETTER,
-  USERLOGGEDINTYPE
+  USERLOGGEDINTYPE,
+  SELLERID,
+  USERPROFILE
 } from "../constants";
 // State object
 const state = {
   auth: false,
   userLoggedIn: {},
   userLogginError: {},
-  userLoggedInType: null
+  userLoggedInType: null,
+  sellerId: null
 };
 
 // Getter functions
@@ -33,6 +36,12 @@ const getters = {
   },
   [USERLOGGEDINTYPE]: state => {
     return state.userLoggedInType;
+  },
+  [SELLERID]: state => {
+    return state.sellerId;
+  },
+  [USERPROFILE]: state => {
+    return state.userProfile;
   }
 };
 // Mutations
@@ -41,7 +50,14 @@ const mutations = {
     state.auth = true;
     state.userLogginError = {};
     state.userLoggedInType = payload.userType;
+    state.sellerId = payload.sellerId;
+    console.log(payload)
     localStorage.setItem("token", JSON.stringify(payload));
+    localStorage.setItem("sellerId", JSON.stringify(payload["sellerId"]));
+    localStorage.setItem("userProfile", JSON.stringify(payload["userType"]));
+    // localStorage.setItem("token", JSON.stringify(payload["token"]));
+    // localStorage.setItem("userLoggedInType", JSON.stringify(payload["userLoggedInType"]));
+    // localStorage.setItem("sellerId", JSON.stringify(payload));
     delete payload.userType;
     state.userLoggedIn = payload;
   },
@@ -119,7 +135,7 @@ const actions = {
     return true;
   },
   [LOGINUSERFROMLOCALSTORAGE]: ({ commit }, payload) => {
-    console.log(payload);
+    // console.log(payload);
     if (payload) {
       commit(LOGINUSERSUCCESS, payload);
     }
