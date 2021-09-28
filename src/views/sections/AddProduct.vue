@@ -65,7 +65,7 @@
           </template>
         </v-select>
 
-        <v-file-input v-model="images" multiple show-size label="Image(s)"></v-file-input>
+        <v-file-input type="file" ref="files" v-model="images" multiple show-size label="Image(s)"></v-file-input>
         <v-divider class="my-6" />
         <v-alert
           dense
@@ -75,19 +75,27 @@
         >
           Veuillez remplir tous les champs
         </v-alert>
+        <v-alert
+          dense
+          outlined
+          type="error"
+          v-if="errorRequest"
+        >
+          Erreur de requête HTTP.
+        </v-alert>
         <v-btn color="warning" class="mr-4" outlined @click="reset"> Reset </v-btn>
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="addProduct()">
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click="getProductModelId()">
           Valider
         </v-btn>
       </v-form>
        <v-dialog v-model="showModal" max-width="500px">
         <v-card>
           <v-card-title>Offre d'achat</v-card-title>
-          <v-card-text>L'offre d'achat pour votre produit s'élève à</v-card-text>
+          <v-card-text>L'offre d'achat pour votre produit s'élève à {{this.sellOfferPrice}} € </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" text @click="showModal = false"> Close </v-btn>
-            <v-btn color="primary" text @click="acceptSellOffer()"> Accept </v-btn>
-             <v-btn color="primary" text @click="refuseSellOffer()"> Decline </v-btn>
+            <v-btn color="warning" text @click="cancelCreation()"> Annuler </v-btn>
+            <v-btn color="error" text @click="declineSellOffer()"> Refuser </v-btn>
+            <v-btn color="success" class="mr-4" text @click="acceptSellOffer()"> Accepter </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -97,7 +105,9 @@
 
 <script>
 import ProductCategoryServices from "../../services/ProductCategoryService.js";
+import SellOfferServices from "../../services/SellOfferServices.js";
 import ProductStateServices from "../../services/ProductStateServices.js";
+import ProductModelServices from "../../services/ProductModelServices.js";
 import ProductServices from "../../services/ProductServices.js";
 import { CREATE_PRODUCT_ACTION } from "@/store/constants";
 import { AUTHGETTER, LOGINUSERFROMLOCALSTORAGE, USERLOGGEDINGETTER, SELLERID, USERPROFILE } from "@/store/constants";
@@ -127,6 +137,11 @@ export default {
       newProductId: null,
       userProfile: null,
       error: false,
+      errorRequest: false,
+      productId: null,
+      sellOfferPrice: null,
+      productModelId: null,
+      sellOfferId: null,
     };
   },
   methods: {
@@ -167,10 +182,13 @@ export default {
       );
     },
     addProduct() {
+        // this.getProductModelId("614490bc9544432934a815c8");
        if (this.title && this.description && this.brand && this.features && this.categoryId && this.productStateId) {
         this.error = false;
-        this.showModal = true;
+        this.categoryId = "614490bc9544432934a815c8";
+        console.log("product model id" + this.productModelId);
         this.sellerId = JSON.parse(localStorage.getItem("sellerId"));
+        var test = this.productModelId;
         var data = [
           "title",
           "description",
@@ -185,14 +203,21 @@ export default {
         data.map((item) => {
           fd.append(item, this[item]);
         });
+        fd.append("productModelId", this.productModelId)
         this.images.map((file, index) => {
           fd.append('images${index}', file);
         });
         this.$store.dispatch(CREATE_PRODUCT_ACTION, fd).then((res) => {
           if (res) {
             // TODO change reset
-            this.reset();
-            console.log('hello there' + res)
+            // this.reset();
+            this.showModal = true;
+            this.productId = res;
+            this.createSellOffer(this.productId, this.sellOfferPrice);
+            console.log('id du produit créée : ' + res)
+          } else {
+            console.log('error request')
+            this.errorRequest = true;
           }
         });
       } else {
@@ -200,10 +225,73 @@ export default {
       }
       
     },
-    acceptSellOffer() {
-      
+    getProductModelId() {
+      if (this.title && this.description && this.brand && this.features && this.categoryId && this.productStateId) {
+        // const categoryId = "614490bc9544432934a815c8";
+        ProductModelServices.getProductModelByCategory("614490bc9544432934a815c8")
+          .then((response) => {
+            console.log("je suis là ");
+            console.log(response);
+            this.productModelId = response.data._id;
+            this.sellOfferPrice = response.data.price;
+            this.calculateSellOfferPrice(this.productStateId, this.sellOfferPrice);
+            console.log("offre d'achat après calcul")
+            console.log(this.sellOfferPrice)
+            console.log(this.productModelId);
+            this.addProduct();
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        this.error = true;
+      }
     },
-    refuseSellOffer() {
+    calculateSellOfferPrice(productStateId, sellOfferPrice) {
+      ProductStateServices.get(productStateId)
+        .then((response) => {
+          this.sellOfferPrice = this.sellOfferPrice - (this.sellOfferPrice*response.data.decrease)
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+
+    },
+    createSellOffer(productId, sellOfferPrice) {
+      console.log("seller id dans create sell offfer")
+      console.log(this.sellerId)
+      var data = {
+        productId: productId,
+        sellOfferPrice: sellOfferPrice,
+        sellerId: JSON.parse(localStorage.getItem("sellerId")),
+      };
+      console.log(data)
+      console.log('in create sell offer')
+      SellOfferServices.createSellOffer(data)
+        .then((response) => {
+          // this.sellOfferId = response.data;
+          // get one sell offer id with response.data
+          // set sell offer accept true or false with user choice
+          console.log(response.data);
+          console.log("HEEEEEEEEHOOOOOOOOOOOOOOOOOOOOOOOO");
+          console.log(response.data._id);
+          this.sellOfferId = response.data._id;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    cancelCreation() {
+      console.log(this.productId)
+      console.log(this.sellOfferId)
+      // get product with id and delete
+      // get sell offer with id and delete 
+    },
+    acceptSellOffer(sellOfferId) {
+      // get sell offer with id 
+      // this.sellOfferAccept = true
+    },
+    declineSellOffer() {
       this.$router.push("/selloffers");
     },
   },

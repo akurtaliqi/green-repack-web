@@ -34,8 +34,15 @@ const actions = {
         "Content-type": undefined
       });
       if (response.status === 201) {
+        console.log("ici 1");
+        console.log(response);
+        console.log("ici 2");
+        console.log(response.data);
+        // response.data = "productId";
+        console.log("ici 3");
+        console.log(response.data);
         commit(PRODUCTCREATEDSUCCESS, response.data);
-        return true;
+        return response.data;
       }
     } catch (error) {
       console.log(error.response);

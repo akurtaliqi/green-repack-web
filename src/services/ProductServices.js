@@ -9,8 +9,8 @@ class ProductServices {
     return http.get(`/product/${id}`);
   }
 
-  createProduct () {
-    return http.post(`/product`);
+  createProduct(data) {
+    return http.post("/product", data);
   }
 }
 
