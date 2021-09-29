@@ -12,6 +12,14 @@ class SellOfferServices {
   createSellOffer (data) {
     return http.post(`/selloffer`, data);
   }
+
+  update(id, data) {
+    return http.put(`/selloffer/${id}`, data);
+  }
+
+  delete(id) {
+    return http.delete(`/selloffer/${id}`);
+  }
 }
 
 export default new SellOfferServices();

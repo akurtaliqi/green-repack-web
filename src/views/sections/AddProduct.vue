@@ -149,7 +149,6 @@ export default {
       ProductCategoryServices.getAll()
         .then((response) => {
           this.categories = response.data;
-          // console.log(response.data);
         })
         .catch((e) => {
           console.log(e);
@@ -159,7 +158,6 @@ export default {
       ProductStateServices.getAll()
         .then((response) => {
           this.productStates = response.data;
-          // console.log(response.data);
         })
         .catch((e) => {
           console.log(e);
@@ -175,20 +173,12 @@ export default {
       this.$store.dispatch(
         `Auth/${LOGINUSERFROMLOCALSTORAGE}`,
         // JSON.parse(localStorage.getItem("sellerId")),
-        console.log('here'),
-        console.log(JSON.parse(localStorage.getItem("sellerId"))),
-        console.log(JSON.parse(localStorage.getItem("userProfile"))),
-        this.sellerId = JSON.parse(localStorage.getItem("sellerId")),
       );
     },
     addProduct() {
-        // this.getProductModelId("614490bc9544432934a815c8");
        if (this.title && this.description && this.brand && this.features && this.categoryId && this.productStateId) {
         this.error = false;
-        this.categoryId = "614490bc9544432934a815c8";
-        console.log("product model id" + this.productModelId);
-        this.sellerId = JSON.parse(localStorage.getItem("sellerId"));
-        var test = this.productModelId;
+        this.sellerId = localStorage.sellerId;
         var data = [
           "title",
           "description",
@@ -209,12 +199,9 @@ export default {
         });
         this.$store.dispatch(CREATE_PRODUCT_ACTION, fd).then((res) => {
           if (res) {
-            // TODO change reset
-            // this.reset();
             this.showModal = true;
             this.productId = res;
             this.createSellOffer(this.productId, this.sellOfferPrice);
-            console.log('id du produit créée : ' + res)
           } else {
             console.log('error request')
             this.errorRequest = true;
@@ -227,17 +214,11 @@ export default {
     },
     getProductModelId() {
       if (this.title && this.description && this.brand && this.features && this.categoryId && this.productStateId) {
-        // const categoryId = "614490bc9544432934a815c8";
-        ProductModelServices.getProductModelByCategory("614490bc9544432934a815c8")
+        ProductModelServices.getProductModelByCategory(this.categoryId)
           .then((response) => {
-            console.log("je suis là ");
-            console.log(response);
             this.productModelId = response.data._id;
             this.sellOfferPrice = response.data.price;
             this.calculateSellOfferPrice(this.productStateId, this.sellOfferPrice);
-            console.log("offre d'achat après calcul")
-            console.log(this.sellOfferPrice)
-            console.log(this.productModelId);
             this.addProduct();
           })
           .catch((e) => {
@@ -258,38 +239,55 @@ export default {
 
     },
     createSellOffer(productId, sellOfferPrice) {
-      console.log("seller id dans create sell offfer")
-      console.log(this.sellerId)
       var data = {
         productId: productId,
         sellOfferPrice: sellOfferPrice,
-        sellerId: JSON.parse(localStorage.getItem("sellerId")),
+        sellerId: localStorage.sellerId,
       };
-      console.log(data)
-      console.log('in create sell offer')
       SellOfferServices.createSellOffer(data)
         .then((response) => {
-          // this.sellOfferId = response.data;
-          // get one sell offer id with response.data
-          // set sell offer accept true or false with user choice
-          console.log(response.data);
-          console.log("HEEEEEEEEHOOOOOOOOOOOOOOOOOOOOOOOO");
-          console.log(response.data._id);
-          this.sellOfferId = response.data._id;
+          this.sellOfferId = response.data;
         })
         .catch((e) => {
           console.log(e);
         });
     },
     cancelCreation() {
-      console.log(this.productId)
-      console.log(this.sellOfferId)
-      // get product with id and delete
-      // get sell offer with id and delete 
+      SellOfferServices.delete(this.sellOfferId)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+
+        ProductServices.delete(this.productId)
+        .then((response) => {
+          // this.reset();
+          console.log(response);
+          this.showModal = false;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
-    acceptSellOffer(sellOfferId) {
-      // get sell offer with id 
-      // this.sellOfferAccept = true
+    acceptSellOffer() {
+      var data = {
+        price: this.sellOfferPrice,
+        sellOfferAccept: true,
+        productId: this.productId,
+        sellerId: this.sellerId,
+      };
+      SellOfferServices.update(this.sellOfferId, data)
+        .then((response) => {
+          this.reset();
+          this.showModal = false;
+          this.$router.push("/selloffers");
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+
     },
     declineSellOffer() {
       this.$router.push("/selloffers");
@@ -300,8 +298,6 @@ export default {
     this.retrieveProductCategories();
     this.retrieveProductStates();
     this.LoginFromCache();
-    console.log(this.sellerId);
-    console.log(this.userProfile);
   },
   computed: {
     ...mapGetters("Auth", [AUTHGETTER, SELLERID, USERPROFILE]),

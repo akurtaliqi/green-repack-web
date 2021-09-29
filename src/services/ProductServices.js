@@ -12,6 +12,10 @@ class ProductServices {
   createProduct(data) {
     return http.post("/product", data);
   }
+
+  delete(id) {
+    return http.delete(`/product/${id}`);
+  }
 }
 
 export default new ProductServices();
