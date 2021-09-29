@@ -53,6 +53,13 @@ const router = new Router({
           meta: { requiresAuth: true, access: 'seller' }
         },
         {
+          path: "managecategories",
+          name: "Gestion catégories",
+          component: () => import("@/views/management/Index.vue"),
+          meta: { src: require("@/assets/about.jpg") },
+          meta: { requiresAuth: true, access: "admin" }
+        },
+        {
           path: "addproduct",
           name: "Vendre un produit",
           component: () => import("@/views/addproduct/Index.vue"),
@@ -93,6 +100,18 @@ router.beforeResolve((to, from, next) => {
         to.meta.access === "restricted"
       ) {
         next("/");
+      }
+      else if (
+        router.app.$store.getters["Auth/AUTHGETTER"] &&
+        to.meta.access !== "admin"
+      ) {
+        next("*");
+      }
+      else if (
+        router.app.$store.getters["Auth/AUTHGETTER"] &&
+        to.meta.access !== "seller"
+      ) {
+        next("*");
       }
     }
   }

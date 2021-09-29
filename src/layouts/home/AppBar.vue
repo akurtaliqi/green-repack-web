@@ -79,6 +79,7 @@ export default {
       { title: "Vendre un produit", access: "seller", route: "addproduct", type: "link" },
       { title: "Login", access: "restricted", route: "Login", type: "link" },
       { title: "About", access: "all", route: "About", type: "link" },
+      { title: "Gestion catégories", access: "admin", route: "managecategories", type: "link" },
       { title: "Logout", access: "loggedInOnly", type: "button" },
     ],
   }),

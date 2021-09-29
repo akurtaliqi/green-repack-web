@@ -6,16 +6,15 @@
   import LoadSections from '@/mixins/load-sections'
 
   export default {
-    name: 'Management',
+    name: 'Admin',
 
-    metaInfo: { title: 'Management' },
+    metaInfo: { title: 'Admin' },
 
     extends: View,
 
     mixins: [
       LoadSections([
-        'hero-alt',
-        'admin'
+        'manage-categories',
       ]),
     ],
   }

@@ -1,5 +1,5 @@
 <template>
-<base-section id="sell-offers">
+<base-section id="manage-categories">
   <v-row align="center" class="list px-3 mx-auto">
     <v-col cols="12" md="8">
       <v-text-field v-model="title" label="Search by Title"></v-text-field>
@@ -51,10 +51,6 @@ export default {
   },
   methods: {
     retrieveTutorials() {
-      console.log(localStorage.sellerId)
-      const id = localStorage.sellerId.toString();
-      id.replace('"', '');
-      console.log(id)
       TutorialDataService.getAllBySellerId("613f08b0f8252d2de46cbe28")
         .then((response) => {
           this.tutorials = response.data.map(this.getDisplayTutorial);

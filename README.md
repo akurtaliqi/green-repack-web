@@ -2,7 +2,7 @@
 
 **Green Repack** is a beautiful web site made by A. Kurtaliqi for Green Repack. It is an e-commerce type website for non commercial profit. The aim of this wep app is to success my Master Degree at [ESGI](https://www.esgi.fr/) school.
 
-This application was developed originally with [Zero Theme Pro](https://store.vuetifyjs.com/products/zero-theme-pro).
+This template is generated with [Zero Theme Pro](https://store.vuetifyjs.com/products/zero-theme-pro) and reworked by A. KURTALIQI for the project needs.
 
 # [Zero Theme PRO](https://store.vuetifyjs.com/products/zero-theme-pro)
 

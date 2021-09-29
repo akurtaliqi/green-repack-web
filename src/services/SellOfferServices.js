@@ -5,6 +5,10 @@ class SellOfferServices {
     return http.get("/selloffer");
   }
 
+  getAllBySellerId (id) {
+    return http.get(`/selloffer/seller/${id}`);
+  }
+
   get (id) {
     return http.get(`/selloffer/${id}`);
   }
