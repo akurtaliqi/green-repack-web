@@ -3,85 +3,82 @@
     <p class="headline">Détails du produit</p>
 
     <v-carousel>
-    <v-carousel-item
-      v-for="(item,i) in colors"
-      :key="i"
-      :src="'http://localhost:3000/'+colors[i]"
-      reverse-transition="fade-transition"
-      transition="fade-transition"
-      height="400"
+      <v-carousel-item
+        v-for="(item,i) in images"
+        :key="i"
+        :src="'http://localhost:3000/'+images[i]"
+        reverse-transition="fade-transition"
+        transition="fade-transition"
+        height="400"
+        max-width="500"
+      ></v-carousel-item>
+    </v-carousel>
+    <v-card
+      class="mx-auto"
       max-width="500"
-    ></v-carousel-item>
-  </v-carousel>
-  <v-card
-    class="mx-auto"
-    max-width="500"
-    tile
-  >
-    <v-list-item>
-      <v-list-item-content>
-        <v-list-item-title>Marque</v-list-item-title>
-        <v-list-item-subtitle>{{currentProduct.brand}}</v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
+      tile
+    >
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>Marque</v-list-item-title>
+          <v-list-item-subtitle>{{currentProduct.brand}}</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
 
-    <v-list-item two-line>
-      <v-list-item-content>
-        <v-list-item-title>Caractéristiques</v-list-item-title>
-        <v-list-item-subtitle>{{currentProduct.features}}</v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>Caractéristiques</v-list-item-title>
+          <v-list-item-subtitle>{{currentProduct.features}}</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
 
-    <v-list-item three-line>
-      <v-list-item-content>
-        <v-list-item-title>Three-line item</v-list-item-title>
-        <v-list-item-subtitle>
-          Secondary line text Lorem ipsum dolor sit amet,
-        </v-list-item-subtitle>
-        <v-list-item-subtitle>
-          consectetur adipiscing elit.
-        </v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
-  </v-card>
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>Caractéristiques</v-list-item-title>
+          <v-list-item-subtitle>{{this.sellOffer}}</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
 
-    <!--v-form ref="form" lazy-validation>
-      <v-text-field
-        v-model="currentProduct.name"
-        :rules="[(v) => !!v || 'Title is required']"
-        label="Title"
-        required
-      ></v-text-field>
 
-      <v-text-field
-        v-model="currentProduct.brand"
-        :rules="[(v) => !!v || 'Description is required']"
-        label="Description"
-        required
-      ></v-text-field>
+      <v-divider class="my-6" />
 
-      <v-text-field
-        v-model="currentProduct.description"
-        :rules="[(v) => !!v || 'Description is required']"
-        label="Description"
-        required
-      ></v-text-field>
-
-      <v-divider class="my-5"></v-divider>
-
-      <v-btn color="error" small class="mr-2" @click="deleteProduct">
-        Supprimer
-      </v-btn>
-
-      <v-btn color="success" small class="mr-2" @click="updateProduct">
-        Modifier
-      </v-btn>
-
-      <v-btn color="warning" small class="mr-2" @click="goBackToProducts">
-        Annuler
-      </v-btn>
-    </v-form-->
-
+      <v-card-actions
+      class="text-center"
+      >
+        <v-btn 
+          text 
+          outlined
+          color="primary accent-2"
+          plain
+          elevation="2"
+          @click="goBackToProducts"
+          v-if="userProfile === 'buyer'"
+        >
+          Retour
+        </v-btn>
+        <v-btn 
+          text 
+          outlined
+          color="primary accent-2"
+          plain
+          elevation="2"
+          :to="submit"
+          v-if="userProfile === 'buyer'"
+        >
+          Acheter
+        </v-btn>
+        <stripe-checkout
+          ref="checkoutRef"
+          mode="subscription"
+          :pk="publishableKey"
+          :line-items="lineItems"
+          :success-url="successURL"
+          :cancel-url="cancelURL"
+          @loading="v => loading = v"
+        />
+        <button @click="submit">Subscribe!</button>
+      </v-card-actions>
+    </v-card>
     <p class="mt-3">{{ message }}</p>
   </div>
 
@@ -93,14 +90,30 @@
 <script>
 import ProductServices from '../../services/ProductServices.js';
 import { AUTHGETTER, LOGINUSERFROMLOCALSTORAGE, USERLOGGEDINGETTER, SELLERID, USERPROFILE } from "@/store/constants";
+import SellOfferServices from '../../services/SellOfferServices.js';
+import { StripeCheckout } from '@vue-stripe/vue-stripe';
 
 export default {
   name: "product",
   data() {
+    this.publishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
     return {
       currentProduct: null,
+      sellOffer:null,
       message: "",
-      colors: [],
+      images: [],
+      userProfile: null,
+
+      loading: false,
+      lineItems: [
+        {
+          price: 'some-price-id', // The id of the recurring price you created in your Stripe dashboard
+          quantity: 1,
+        },
+      ],
+      successURL: 'your-success-url',
+      cancelURL: 'your-cancel-url',
+      
     };
   },
   methods: {
@@ -108,8 +121,19 @@ export default {
       ProductServices.get(id)
         .then((response) => {
           this.currentProduct = response.data;
-          this.colors = response.data.images;
+          this.images = response.data.images;
           console.log(response.data.images)
+          console.log(response.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+
+    getSellOffer(id) {
+      SellOfferServices.get(id)
+        .then((response) => {
+          this.sellOffer = response.data;
           console.log(response.data);
         })
         .catch((e) => {
@@ -160,10 +184,21 @@ export default {
     goBackToProducts() {
       this.$router.push("/Products");
     },
+
+    goBackToProducts() {
+      this.$router.push("/Products");
+    },
+
+    submit () {
+      // You will be redirected to Stripe's secure checkout page
+      this.$refs.checkoutRef.redirectToCheckout();
+    },
   },
   mounted() {
     this.message = "";
     this.getProduct(this.$route.params.id);
+    // this.getSellOffer(this.$route.params.id);
+    this.userProfile = localStorage.userType;
   },
 };
 </script>
