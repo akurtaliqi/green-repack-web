@@ -1,7 +1,8 @@
 <template>
 <base-section id="sell-offers">
   <v-row align="center" class="list px-3 mx-auto">
-    <v-col cols="12" md="8">
+
+    <!--v-col cols="12" md="8">
       <v-text-field v-model="title" label="Search by Title"></v-text-field>
     </v-col>
 
@@ -9,11 +10,11 @@
       <v-btn small @click="searchTitle">
         Search
       </v-btn>
-    </v-col>
+    </v-col-->
 
     <v-col cols="12" sm="12">
       <v-card class="mx-auto" tile>
-        <v-card-title>Tutorials</v-card-title>
+        <v-card-title>Mes offres de ventes</v-card-title>
 
         <v-data-table
           :headers="headers"
@@ -22,43 +23,97 @@
           :hide-default-footer="true"
         >
           <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small class="mr-2" @click="editTutorial(item.id)">mdi-pencil</v-icon>
-            <v-icon small @click="deleteTutorial(item.id)">mdi-delete</v-icon>
+            <v-icon small class="mr-2" @click="downloadCoupon(item.id)">mdi-upload</v-icon>
+            <!--v-checkbox
+             @change="checkboxUpdated"
+             color="info"
+             label="Envoyer produit"
+             v-bind:disabled="isToDisable(item.id)"
+            @click="sendProduct(item.id)"></v-checkbox-->
+            <v-icon small v-if="item.couponDownloaded==true" @click="sendProduct(item.id)">mdi-send</v-icon>
           </template>
         </v-data-table>
       </v-card>
     </v-col>
   </v-row>
+  <v-dialog v-model="showModal" persistent max-width="500px">
+        <v-card>
+          <v-card-title>Envoyer produit</v-card-title>
+          <v-card-text>Avez-vous envoyé votre produit ?</v-card-text>
+          <v-card-actions>
+            <v-btn color="warning" text @click="cancel()"> Annuler </v-btn>
+            <v-btn color="error" text @click="cancel()"> Refuser </v-btn>
+            <v-btn color="success" class="mr-4" text @click="cancel()"> Accepter </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
   </base-section>
 </template>
 
 <script>
 import TutorialDataService from "../../services/SellOfferServices.js";
 import { AUTHGETTER, LOGINUSERFROMLOCALSTORAGE, USERLOGGEDINGETTER, SELLERID, USERPROFILE } from "@/store/constants";
+import ProductServices from '../../services/ProductServices.js';
 export default {
   name: 'SectionSelloffers',
   data() {
     return {
       tutorials: [],
       title: "",
+      showModal:false,
+      disabled:false,
+      sellerId:null,
+      couponDownloaded:false,
+      product: [],
       headers: [
         { text: "Title", align: "start", sortable: false, value: "title" },
-        { text: "Description", value: "description", sortable: false },
-        { text: "Status", value: "status", sortable: false },
-        { text: "Actions", value: "actions", sortable: false },
+        { text: "Price", align: "start", sortable: false, value: "price" },
+        { text: "Actions",align: "start", value: "actions", sortable: false },
       ],
     };
   },
   methods: {
-    retrieveTutorials() {
-      console.log(localStorage.sellerId)
-      const id = localStorage.sellerId.toString();
-      id.replace('"', '');
-      console.log(id)
-      TutorialDataService.getAllBySellerId("613f08b0f8252d2de46cbe28")
+    getProductBySellOffer(id) {
+      ProductServices.get(id)
         .then((response) => {
-          this.tutorials = response.data.map(this.getDisplayTutorial);
-          console.log(response.data);
+          response.data.description;
+          console.log(response.name)
+          console.log(response.data.description)
+          this.product.push(response.data.description)
+          console.log(this.product)
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
+    retrieveTutorials() {
+      this.sellerId = localStorage.sellerId;
+      TutorialDataService.getAllBySellerId(this.sellerId)
+        .then((response) => {
+          let sellOffer = [];
+          let test2 = null;
+          let subTab = [];
+          // let product = [];
+          /*for (let i = 0; i < response.data.length; i++) {
+            sellOffer.push(response.data[i])
+            //console.log(response.data.productId)
+            // test.push(([response.data[i].price, this.product]).join());
+            this.getProductBySellOffer(response.data[i].productId)
+            
+          }*/
+
+          /*for (let j = 0; j < sellOffer.length; j++) {
+            console.log("sellOffer[j]")
+            console.log(sellOffer[j])
+            for (let k = 0; k < this.product.length; k++) {
+            console.log("this.product[k]")
+            console.log(this.product[k])
+            }
+            
+          }*/
+
+
+          this.tutorials = response.data;
         })
         .catch((e) => {
           console.log(e);
@@ -83,7 +138,8 @@ export default {
     searchTitle() {
       TutorialDataService.findByTitle(this.title)
         .then((response) => {
-          this.tutorials = response.data.map(this.getDisplayTutorial);
+          // this.tutorials = response.data.map(this.getDisplayTutorial);
+          console.log("fuck you");
           console.log(response.data);
         })
         .catch((e) => {
@@ -91,40 +147,51 @@ export default {
         });
     },
 
-    editTutorial(id) {
-      this.$router.push({ name: "tutorial-details", params: { id: id } });
+    
+
+    downloadCoupon() {
+      // this.$router.push({ name: "tutorial-details", params: { id: id } });
+      //TODO fix couponDownloaded
+      this.couponDownloaded=true;
     },
 
-    deleteTutorial(id) {
-      TutorialDataService.delete(id)
-        .then(() => {
-          this.refreshList();
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+    sendProduct(id) {
+      this.showModal = true;
+      //get one product with sellOfferId
+      //set send true
+
+    },
+
+    cancel() {
+      this.showModal = false;
+      //get one product with sellOfferId
+      //set send true
+
+    },
+
+    checkboxUpdated(newValue){
+      console.log(newValue)
+    },
+
+    isToDisable(newValue){
+      //get one product with sellOfferId
+      //get sent
+      //update disabled
+      console.log(newValue)
     },
 
     getDisplayTutorial(tutorial) {
       return {
         id: tutorial._id,
-        title: tutorial.price,
+        price: tutorial.brand,
         // title: tutorial.title.length > 30 ? tutorial.title.substr(0, 30) + "..." : tutorial.title,
         // price: tutorial.description.length > 30 ? tutorial.description.substr(0, 30) + "..." : tutorial.description,
         // createDate: tutorial.published ? "Published" : "Pending",
       };
     },
-
-    LoginFromCache() {
-      this.$store.dispatch(
-        `Auth/${LOGINUSERFROMLOCALSTORAGE}`,
-        // JSON.parse(localStorage.getItem("sellerId")),
-      );
-    },
   },
   mounted() {
     this.retrieveTutorials();
-    this.LoginFromCache();
   },
 };
 </script>

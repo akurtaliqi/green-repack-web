@@ -88,7 +88,7 @@
           Valider
         </v-btn>
       </v-form>
-       <v-dialog v-model="showModal" max-width="500px">
+       <v-dialog v-model="showModal" persistent max-width="500px">
         <v-card>
           <v-card-title>Offre d'achat</v-card-title>
           <v-card-text>L'offre d'achat pour votre produit s'élève à {{this.sellOfferPrice}} € </v-card-text>
@@ -110,7 +110,7 @@ import ProductStateServices from "../../services/ProductStateServices.js";
 import ProductModelServices from "../../services/ProductModelServices.js";
 import ProductServices from "../../services/ProductServices.js";
 import { CREATE_PRODUCT_ACTION } from "@/store/constants";
-import { AUTHGETTER, LOGINUSERFROMLOCALSTORAGE, USERLOGGEDINGETTER, SELLERID, USERPROFILE } from "@/store/constants";
+import { AUTHGETTER, LOGINUSERFROMLOCALSTORAGE, USERLOGGEDINGETTER, SELLERID,  } from "@/store/constants";
 import { mapGetters } from "vuex";
 import image from "@/assets/article-1.jpg";
 export default {
@@ -135,7 +135,6 @@ export default {
       images: null,
       showModal: false,
       newProductId: null,
-      userProfile: null,
       error: false,
       errorRequest: false,
       productId: null,
@@ -168,12 +167,6 @@ export default {
     },
     reset() {
       this.$refs.form.reset();
-    },
-    LoginFromCache() {
-      this.$store.dispatch(
-        `Auth/${LOGINUSERFROMLOCALSTORAGE}`,
-        // JSON.parse(localStorage.getItem("sellerId")),
-      );
     },
     addProduct() {
        if (this.title && this.description && this.brand && this.features && this.categoryId && this.productStateId) {
@@ -242,7 +235,7 @@ export default {
       var data = {
         productId: productId,
         sellOfferPrice: sellOfferPrice,
-        sellerId: localStorage.sellerId,
+        sellerId: this.sellerId,
       };
       SellOfferServices.createSellOffer(data)
         .then((response) => {
@@ -297,10 +290,9 @@ export default {
   mounted() {
     this.retrieveProductCategories();
     this.retrieveProductStates();
-    this.LoginFromCache();
   },
   computed: {
-    ...mapGetters("Auth", [AUTHGETTER, SELLERID, USERPROFILE]),
+    ...mapGetters("Auth", [AUTHGETTER, SELLERID ]),
   },
 };
 </script>

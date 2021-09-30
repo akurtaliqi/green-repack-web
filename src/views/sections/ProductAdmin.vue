@@ -10,42 +10,11 @@
       reverse-transition="fade-transition"
       transition="fade-transition"
       height="400"
-      max-width="500"
+      width="400"
     ></v-carousel-item>
   </v-carousel>
-  <v-card
-    class="mx-auto"
-    max-width="500"
-    tile
-  >
-    <v-list-item>
-      <v-list-item-content>
-        <v-list-item-title>Marque</v-list-item-title>
-        <v-list-item-subtitle>{{currentProduct.brand}}</v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
 
-    <v-list-item two-line>
-      <v-list-item-content>
-        <v-list-item-title>Caractéristiques</v-list-item-title>
-        <v-list-item-subtitle>{{currentProduct.features}}</v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
-
-    <v-list-item three-line>
-      <v-list-item-content>
-        <v-list-item-title>Three-line item</v-list-item-title>
-        <v-list-item-subtitle>
-          Secondary line text Lorem ipsum dolor sit amet,
-        </v-list-item-subtitle>
-        <v-list-item-subtitle>
-          consectetur adipiscing elit.
-        </v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
-  </v-card>
-
-    <!--v-form ref="form" lazy-validation>
+    <v-form ref="form" lazy-validation>
       <v-text-field
         v-model="currentProduct.name"
         :rules="[(v) => !!v || 'Title is required']"
@@ -80,7 +49,7 @@
       <v-btn color="warning" small class="mr-2" @click="goBackToProducts">
         Annuler
       </v-btn>
-    </v-form-->
+    </v-form>
 
     <p class="mt-3">{{ message }}</p>
   </div>
@@ -101,6 +70,7 @@ export default {
       currentProduct: null,
       message: "",
       colors: [],
+      userType : null,
     };
   },
   methods: {

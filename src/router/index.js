@@ -43,7 +43,12 @@ const router = new Router({
           path: "/products/:id",
           name: "product-details",
           component: () => import("@/views/sections/Product.vue"),
-          meta: { requiresAuth: true, access: "buyer" }
+        },
+        {
+          path: "/products/:id",
+          name: "product-details-admin",
+          component: () => import("@/views/sections/ProductAdmin.vue"),
+          meta: { requiresAuth: true, access: 'admin' }
         },
         {
           path: "selloffers",

@@ -99,12 +99,12 @@ export default {
 </script>
 
 <style lang="sass">
-#home-app-bar
-  .v-tabs-slider
-    max-width: 24px
-    margin: 0 auto
+  #home-app-bar
+    .v-tabs-slider
+      max-width: 24px
+      margin: 0 auto
 
-  .v-tab
-    &::before
-      display: none
+    .v-tab
+      &::before
+        display: none
 </style>

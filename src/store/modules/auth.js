@@ -51,14 +51,12 @@ const mutations = {
     state.userLogginError = {};
     state.userLoggedInType = payload.userType;
     state.sellerId = payload.sellerId;
-    console.log(payload)
+    state.userType = payload.userType;
     localStorage.setItem("token", JSON.stringify(payload));
-    localStorage.setItem("sellerId", JSON.stringify(payload["sellerId"]));
-    localStorage.setItem("userProfile", JSON.stringify(payload["userType"]));
-    // localStorage.setItem("token", JSON.stringify(payload["token"]));
-    // localStorage.setItem("userLoggedInType", JSON.stringify(payload["userLoggedInType"]));
-    // localStorage.setItem("sellerId", JSON.stringify(payload));
-    delete payload.userType;
+    localStorage.setItem("sellerId", payload.sellerId);
+    localStorage.setItem("userType", payload.userType);
+    
+    // delete payload.userType;
     state.userLoggedIn = payload;
   },
   [LOGINUSERFAILED]: (state, payload) => {
@@ -70,6 +68,7 @@ const mutations = {
     state.auth = false;
     state.userLoggedIn = {};
     state.userLogginError = {};
+    state.userType = null;
   }
 };
 // Actions
@@ -130,6 +129,7 @@ const actions = {
   },
   [LOGOUTUSER]: ({ commit }) => {
     commit(LOGOUTUSERSUCCESS);
+    localStorage.removeItem("userType");
     localStorage.removeItem("token");
     localStorage.removeItem("randid");
     return true;

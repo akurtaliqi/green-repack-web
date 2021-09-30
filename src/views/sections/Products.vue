@@ -1,6 +1,7 @@
 <template>
     <v-container>
       <div
+      max-width="750"
         v-for="(field, index) in fields"
         :key="field.id">
         <!--div class="display-1">{{ field.title }}</div-->
@@ -20,13 +21,15 @@
             </div-->
             <v-row>
               <v-col
+                sm="3"
+                md="3"
                 v-for="item in items"
                 :key="item.name">
                 <v-card
-                max-width="350"
+                max-width="370"
                 >
                     <v-img>
-                        <v-img :src="'http://localhost:3000/'+item.images[0]" />
+                        <v-img :src="'http://localhost:3000/'+item.images[0]" height="300"/>
                     </v-img>
 
                   <v-card-title class="subheading font-weight-bold">
@@ -47,7 +50,7 @@
                       </v-list-item-content>
                     </v-list-item>
                    
-                    <v-expansion-panels
+                    <!--v-expansion-panels
                     flat
                     >
                         <v-expansion-panel>
@@ -56,19 +59,17 @@
                             {{ item.features }}
                             </v-expansion-panel-content>
                         </v-expansion-panel>
-                    </v-expansion-panels>
-                    <v-card-actions
-                    v-if="USERLOGGEDINTYPE != null"
-                    >
+                    </v-expansion-panels-->
+                    <v-card-actions>
                     <v-btn 
                     text 
                     outlined
                     color="primary accent-2"
                     plain
                     elevation="2"
-                    @click="editProduct(item._id)"
+                    @click="showProduct(item._id)"
                     >
-                        Modifier
+                      Détails
                     </v-btn>
                     <v-btn 
                     text 
@@ -76,6 +77,18 @@
                     color="primary accent-2"
                     plain
                     elevation="2"
+                    v-if="userProfile === 'admin'"
+                    @click="editProduct(item._id)"
+                    >
+                      Modifier
+                    </v-btn>
+                    <v-btn 
+                    text 
+                    outlined
+                    color="primary accent-2"
+                    plain
+                    elevation="2"
+                    v-if="userProfile === 'buyer'"
                     >
                         Acheter
                     </v-btn>
@@ -84,13 +97,19 @@
                 </v-card>
               </v-col>
             </v-row>
-          </template>
-          <template v-slot:footer>
+            <v-divider class="my-6" />
             <v-pagination
               v-model="paginations[index].page"
               :length="paginations[index].pageCount">
             </v-pagination>
           </template>
+          <v-divider class="my-6" />
+          <!--template v-slot:footer>
+            <v-pagination
+              v-model="paginations[index].page"
+              :length="paginations[index].pageCount">
+            </v-pagination>
+          </template-->
         </v-data-iterator>
       </div>
     </v-container>
@@ -98,7 +117,7 @@
 
 <script>
 import ProductServices from '../../services/ProductServices.js';
-import { AUTHGETTER, USERLOGGEDINTYPE } from "@/store/constants";
+import { AUTHGETTER, LOGINUSERFROMLOCALSTORAGE, USERLOGGEDINGETTER, SELLERID, USERPROFILE } from "@/store/constants";
 import { mapGetters } from "vuex";
 
 export default {
@@ -113,7 +132,10 @@ export default {
     paginations: [],
     fields: [],
     buyerId: '612624ab68df834028b29d96',
+    userLoggedIn:false,
     // currentUserId: null,
+    userProfile:null,
+    userType:null,
     };
   },
   methods: {
@@ -162,8 +184,20 @@ export default {
     },
 
     editProduct(id) {
+      this.$router.push({ name: "product-details-admin", params: { id: id } });
+    },
+
+    showProduct(id) {
       this.$router.push({ name: "product-details", params: { id: id } });
     },
+
+    getUserProfile() {
+      this.userProfile = localStorage.userType;
+      console.log("console ici")
+      console.log(localStorage.userType)
+      console.log(localStorage.userLoggedIn)
+    },
+
 
   },
   watch: {
@@ -175,20 +209,28 @@ export default {
     }
   },
   mounted() {
-    this.retrieveProducts();
+    this.retrieveProducts(),
+    this.getUserProfile(),
     this.fields = [
     	{
         id: '1',
         title: 'Main'
       }
-    ]
+    ],
+    console.log("hello")
   },
   computed: {
-    ...mapGetters("Auth", [AUTHGETTER, USERLOGGEDINTYPE]),
+    ...mapGetters("Auth", [AUTHGETTER]),
   },
 };
 </script>
 
 <style scoped>
 .v-expansion-panel-header { padding: 16px !important; }
+
+@media screen and (max-width: 959px) {
+  .v-card {
+    width:80%;
+  }
+}
 </style>
