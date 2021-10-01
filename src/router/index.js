@@ -45,8 +45,8 @@ const router = new Router({
           component: () => import("@/views/sections/Product.vue"),
         },
         {
-          path: "/products/:id",
-          name: "product-details-admin",
+          path: "/admin/products/:id",
+          name: "admin-product-details",
           component: () => import("@/views/sections/ProductAdmin.vue"),
           meta: { requiresAuth: true, access: 'admin' }
         },
@@ -58,9 +58,16 @@ const router = new Router({
           meta: { requiresAuth: true, access: 'seller' }
         },
         {
-          path: "managecategories",
-          name: "Gestion catégories",
+          path: "managelists",
+          name: "Gestion des listes",
           component: () => import("@/views/management/Index.vue"),
+          meta: { src: require("@/assets/about.jpg") },
+          meta: { requiresAuth: true, access: "admin" }
+        },
+        {
+          path: "manageselloffers",
+          name: "Gestion produits",
+          component: () => import("@/views/management/ManageProducts.vue"),
           meta: { src: require("@/assets/about.jpg") },
           meta: { requiresAuth: true, access: "admin" }
         },

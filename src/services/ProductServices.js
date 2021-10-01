@@ -5,6 +5,10 @@ class ProductServices {
     return http.get("/product");
   }
 
+  getAllProductsToValidate () {
+    return http.get("/product/validate");
+  }
+
   get (id) {
     return http.get(`/product/${id}`);
   }
@@ -15,6 +19,10 @@ class ProductServices {
 
   delete(id) {
     return http.delete(`/product/${id}`);
+  }
+
+  update(id, data) {
+    return http.put(`/product/${id}`, data);
   }
 }
 

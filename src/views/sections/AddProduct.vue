@@ -232,6 +232,9 @@ export default {
 
     },
     createSellOffer(productId, sellOfferPrice) {
+      console.log(productId)
+      console.log(sellOfferPrice)
+      console.log(this.sellerId)
       var data = {
         productId: productId,
         sellOfferPrice: sellOfferPrice,

@@ -1,5 +1,5 @@
 <template>
-<base-section id="sell-offers">
+<base-section id="manage-products">
   <v-row align="center" class="list px-3 mx-auto">
 
     <!--v-col cols="12" md="8">
@@ -14,7 +14,7 @@
 
     <v-col cols="12" sm="12">
       <v-card class="mx-auto" tile>
-        <v-card-title>Mes offres de ventes</v-card-title>
+        <v-card-title>Les produits à valider</v-card-title>
 
         <v-data-table
           :headers="headers"
@@ -22,18 +22,11 @@
           disable-pagination
           :hide-default-footer="true"
         >
-          <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small class="mr-2" @click="downloadCoupon(item.id)">mdi-upload</v-icon>
-            <!--v-icon small v-if="item.couponDownloaded==true" @click="sendProduct(item.id)">mdi-send</v-icon-->
-            <!--v-icon small @click="sendProduct(item.productId)">mdi-send</v-icon-->
+          <template v-slot:[`item.number`]>
+            <v-icon small>1</v-icon>
           </template>
-          <template v-slot:[`item.boncommande`]="{ item }">
-            <v-checkbox
-             color="info"
-             label="Envoyer produit"
-             v-if="productSent === false"
-            @click="sendProduct(item.productId)"></v-checkbox>
-            <!--v-icon small v-if="item.couponDownloaded==true" @click="sendProduct(item.id)">mdi-send</v-icon-->
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-icon small @click="showProduct(item._id)">mdi-pencil</v-icon>
             <!--v-icon small @click="sendProduct(item.productId)">mdi-send</v-icon-->
           </template>
         </v-data-table>
@@ -47,7 +40,7 @@
           <v-card-actions>
             <v-btn color="warning" text @click="cancel()"> Annuler </v-btn>
             <v-btn color="error" text @click="cancel()"> Refuser </v-btn>
-            <v-btn color="success" class="mr-4" text @click="productSent()"> Accepter </v-btn>
+            <v-btn color="success" class="mr-4" text @click="productVerfied()"> Accepter </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -55,7 +48,6 @@
 </template>
 
 <script>
-import TutorialDataService from "../../services/SellOfferServices.js";
 import { AUTHGETTER, LOGINUSERFROMLOCALSTORAGE, USERLOGGEDINGETTER, SELLERID, USERPROFILE } from "@/store/constants";
 import ProductServices from '../../services/ProductServices.js';
 import SellOfferServices from '../../services/SellOfferServices.js';
@@ -73,59 +65,21 @@ export default {
       productId: null,
       productSent: false,
       headers: [
+        { text: "#", align: "start", sortable: false, value: "number" },
         { text: "Title", align: "start", sortable: false, value: "title" },
-        { text: "Price", align: "start", sortable: false, value: "price" },
         { text: "Actions",align: "start", value: "actions", sortable: false },
-        { text: "Bon de commande",align: "start", value: "boncommande", sortable: false },
       ],
     };
   },
   methods: {
-    getProductBySellOffer(id) {
-      ProductServices.get(id)
+    retrieveTutorials() {
+      ProductServices.getAllProductsToValidate()
         .then((response) => {
           console.log("i am here")
           console.log(response.data)
           response.data;
-          this.productId = response.data._id;
-          this.product = response.data;
-          //console.log(response.name)
-          //console.log(response.data.description)
-          //this.product.push(response.data.description)
+          this.tutorials=response.data;
           
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    retrieveTutorials() {
-      this.sellerId = localStorage.sellerId;
-      TutorialDataService.getAllBySellerId(this.sellerId)
-        .then((response) => {
-          let sellOffer = [];
-          let test2 = null;
-          let subTab = [];
-          // let product = [];
-          /*for (let i = 0; i < response.data.length; i++) {
-            sellOffer.push(response.data[i])
-            //console.log(response.data.productId)
-            // test.push(([response.data[i].price, this.product]).join());
-            this.getProductBySellOffer(response.data[i].productId)
-            
-          }*/
-
-          /*for (let j = 0; j < sellOffer.length; j++) {
-            console.log("sellOffer[j]")
-            console.log(sellOffer[j])
-            for (let k = 0; k < this.product.length; k++) {
-            console.log("this.product[k]")
-            console.log(this.product[k])
-            }
-            
-          }*/
-
-
-          this.tutorials = response.data;
         })
         .catch((e) => {
           console.log(e);
@@ -151,7 +105,6 @@ export default {
       TutorialDataService.findByTitle(this.title)
         .then((response) => {
           // this.tutorials = response.data.map(this.getDisplayTutorial);
-          console.log("fuck you");
           console.log(response.data);
         })
         .catch((e) => {
@@ -167,7 +120,7 @@ export default {
       this.couponDownloaded=true;
     },
 
-    sendProduct(id) {
+    verifyProduct(id) {
       this.showModal = true;
 
       console.log(id)
@@ -177,10 +130,11 @@ export default {
 
     },
 
-    productSent() {
+    productVerifed() {
       this.showModal = true;
       console.log("id in product sent")
-      console.log(this.productId)
+       console.log(this.productId)
+
 
       //get one product with sellOfferId
       //set send true
@@ -191,7 +145,6 @@ export default {
 
       ProductServices.update(this.productId, data)
         .then((response) => {
-          console.log("i am in update bitch")
           console.log(response.data)
           response.data;
           this.product = response.data;
@@ -230,6 +183,10 @@ export default {
         // createDate: tutorial.published ? "Published" : "Pending",
       };
     },
+
+    showProduct(id) {
+      this.$router.push({ name: "admin-product-details", params: { id: id } });
+    }
   },
   mounted() {
     this.retrieveTutorials();

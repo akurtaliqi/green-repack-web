@@ -37,7 +37,7 @@
           cols="12"
           md="6"
         >
-          Copyright &copy; 2021 Vuetify, LLC, for Green Repack
+          Copyright &copy; 2021 Vuetify, LLC, Stormy for Green Repack
         </v-col>
       </v-row>
     </v-container>

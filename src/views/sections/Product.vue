@@ -69,14 +69,14 @@
         </v-btn>
         <stripe-checkout
           ref="checkoutRef"
-          mode="subscription"
+          mode="payment"
           :pk="publishableKey"
           :line-items="lineItems"
           :success-url="successURL"
           :cancel-url="cancelURL"
           @loading="v => loading = v"
         />
-        <button @click="submit">Subscribe!</button>
+        <button @click="submit">Pay now!</button>
       </v-card-actions>
     </v-card>
     <p class="mt-3">{{ message }}</p>
@@ -92,6 +92,7 @@ import ProductServices from '../../services/ProductServices.js';
 import { AUTHGETTER, LOGINUSERFROMLOCALSTORAGE, USERLOGGEDINGETTER, SELLERID, USERPROFILE } from "@/store/constants";
 import SellOfferServices from '../../services/SellOfferServices.js';
 import { StripeCheckout } from '@vue-stripe/vue-stripe';
+import { StripePlugin } from '@vue-stripe/vue-stripe';
 
 export default {
   name: "product",
@@ -107,11 +108,11 @@ export default {
       loading: false,
       lineItems: [
         {
-          price: 'some-price-id', // The id of the recurring price you created in your Stripe dashboard
+          price: '30', // The id of the recurring price you created in your Stripe dashboard
           quantity: 1,
         },
       ],
-      successURL: 'your-success-url',
+      successURL: 'https://localhost:3000/webhook',
       cancelURL: 'your-cancel-url',
       
     };
@@ -179,10 +180,6 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-    },
-
-    goBackToProducts() {
-      this.$router.push("/Products");
     },
 
     goBackToProducts() {

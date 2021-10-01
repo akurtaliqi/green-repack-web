@@ -77,17 +77,6 @@
                     color="primary accent-2"
                     plain
                     elevation="2"
-                    v-if="userProfile === 'admin'"
-                    @click="editProduct(item._id)"
-                    >
-                      Modifier
-                    </v-btn>
-                    <v-btn 
-                    text 
-                    outlined
-                    color="primary accent-2"
-                    plain
-                    elevation="2"
                     v-if="userProfile === 'buyer'"
                     >
                         Acheter
@@ -131,7 +120,7 @@ export default {
     itemsPerPage: 20,
     paginations: [],
     fields: [],
-    buyerId: '612624ab68df834028b29d96',
+    // buyerId: '612624ab68df834028b29d96',
     userLoggedIn:false,
     // currentUserId: null,
     userProfile:null,
@@ -181,10 +170,6 @@ export default {
         .catch(e => {
           console.log(e);
         });
-    },
-
-    editProduct(id) {
-      this.$router.push({ name: "product-details-admin", params: { id: id } });
     },
 
     showProduct(id) {

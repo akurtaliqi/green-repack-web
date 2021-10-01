@@ -14,7 +14,7 @@
 
     mixins: [
       LoadSections([
-        'manage-lists',
+        'manage-products',
       ]),
     ],
   }

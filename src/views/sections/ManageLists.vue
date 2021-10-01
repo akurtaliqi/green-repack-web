@@ -1,42 +1,27 @@
 <template>
-<base-section id="manage-categories">
-  <v-row align="center" class="list px-3 mx-auto">
-    <v-col cols="12" md="8">
-      <v-text-field v-model="title" label="Search by Title"></v-text-field>
-    </v-col>
-
-    <v-col cols="12" md="4">
-      <v-btn small @click="searchTitle">
-        Search
-      </v-btn>
-    </v-col>
-
-    <v-col cols="12" sm="12">
+  <base-section id="manage-lists">
+    <v-row align="center" class="list mx-auto">
       <v-card class="mx-auto" tile>
-        <v-card-title>Tutorials</v-card-title>
-
-        <v-data-table
-          :headers="headers"
-          :items="tutorials"
-          disable-pagination
-          :hide-default-footer="true"
-        >
-          <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small class="mr-2" @click="editTutorial(item.id)">mdi-pencil</v-icon>
-            <v-icon small @click="deleteTutorial(item.id)">mdi-delete</v-icon>
-          </template>
-        </v-data-table>
+          <div class="tabs" align="center">
+            <base-btn v-for="tab in tabs" :key="tab.link" @click="selected = tab.link;">
+              {{ tab.text }}
+            </base-btn>
+          </div> 
+        <base :is="selected"/>
       </v-card>
-    </v-col>
-  </v-row>
+    </v-row>
   </base-section>
 </template>
 
 <script>
 import TutorialDataService from "../../services/SellOfferServices.js";
 import { AUTHGETTER, LOGINUSERFROMLOCALSTORAGE, USERLOGGEDINGETTER, SELLERID, USERPROFILE } from "@/store/constants";
+import ManageProductStates from "../../components/base/ManageProductStates.vue";
+import LoginBuyer from "../../components/base/LoginBuyer.vue";
+import LoginSeller from "../../components/base/LoginSeller.vue";
+import LoginAdmin from "../../components/base/LoginAdmin.vue";
 export default {
-  name: 'SectionSelloffers',
+  name: 'SectionManageLists',
   data() {
     return {
       tutorials: [],
@@ -47,7 +32,24 @@ export default {
         { text: "Status", value: "status", sortable: false },
         { text: "Actions", value: "actions", sortable: false },
       ],
+
+      tabs: [
+        { text: "États des produits", link: "manage-product-states" },
+        { text: "Modèles des produits", link: "login-admin"},
+        { text: "Catégories des produits", link: "login-buyer"},
+        { text: "Entrepôts", link: "login-seller"},
+      ],
+      selected: "manage-product-states",
+
+      /*tabs: ["manage-product-states", "Contact"],
+      selected: "manage-product-states"*/
     };
+  },
+  components: {
+    ManageProductStates,
+    LoginBuyer,
+    LoginSeller,
+    LoginAdmin
   },
   methods: {
     retrieveTutorials() {
@@ -125,8 +127,11 @@ export default {
 };
 </script>
 
-<style>
+<style scroped>
 .list {
-  max-width: 750px;
+  max-width: auto;
+}
+.tabs {
+  width:auto;
 }
 </style>
