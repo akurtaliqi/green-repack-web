@@ -18,7 +18,7 @@
 
         <v-data-table
           :headers="headers"
-          :items="tutorials"
+          :items="sellOffers"
           disable-pagination
           :hide-default-footer="true"
         >
@@ -27,11 +27,14 @@
             <!--v-icon small v-if="item.couponDownloaded==true" @click="sendProduct(item.id)">mdi-send</v-icon-->
             <!--v-icon small @click="sendProduct(item.productId)">mdi-send</v-icon-->
           </template>
+          <template v-slot:[`item.number`]>
+            <v-icon small>1</v-icon>
+          </template>
           <template v-slot:[`item.boncommande`]="{ item }">
             <v-checkbox
              color="info"
              label="Envoyer produit"
-             v-if="productSent === false"
+             v-if="sent === false"
             @click="sendProduct(item.productId)"></v-checkbox>
             <!--v-icon small v-if="item.couponDownloaded==true" @click="sendProduct(item.id)">mdi-send</v-icon-->
             <!--v-icon small @click="sendProduct(item.productId)">mdi-send</v-icon-->
@@ -55,15 +58,13 @@
 </template>
 
 <script>
-import TutorialDataService from "../../services/SellOfferServices.js";
-import { AUTHGETTER, LOGINUSERFROMLOCALSTORAGE, USERLOGGEDINGETTER, SELLERID, USERPROFILE } from "@/store/constants";
 import ProductServices from '../../services/ProductServices.js';
 import SellOfferServices from '../../services/SellOfferServices.js';
 export default {
   name: 'SectionSelloffers',
   data() {
     return {
-      tutorials: [],
+      sellOffers: [],
       title: "",
       showModal:false,
       disabled:false,
@@ -71,9 +72,10 @@ export default {
       couponDownloaded:false,
       product: null,
       productId: null,
-      productSent: false,
+      sent: false,
+      images:null,
       headers: [
-        { text: "Title", align: "start", sortable: false, value: "title" },
+        { text: "#", align: "start", sortable: false, value: "number" },
         { text: "Price", align: "start", sortable: false, value: "price" },
         { text: "Actions",align: "start", value: "actions", sortable: false },
         { text: "Bon de commande",align: "start", value: "boncommande", sortable: false },
@@ -84,23 +86,19 @@ export default {
     getProductBySellOffer(id) {
       ProductServices.get(id)
         .then((response) => {
-          console.log("i am here")
-          console.log(response.data)
           response.data;
           this.productId = response.data._id;
           this.product = response.data;
-          //console.log(response.name)
-          //console.log(response.data.description)
-          //this.product.push(response.data.description)
+          this.images = response.data.images;
           
         })
         .catch((e) => {
           console.log(e);
         });
     },
-    retrieveTutorials() {
+    retrieveSellOffers() {
       this.sellerId = localStorage.sellerId;
-      TutorialDataService.getAllBySellerId(this.sellerId)
+      SellOfferServices.getAllBySellerId(this.sellerId)
         .then((response) => {
           let sellOffer = [];
           let test2 = null;
@@ -125,7 +123,7 @@ export default {
           }*/
 
 
-          this.tutorials = response.data;
+          this.sellOffers = response.data;
         })
         .catch((e) => {
           console.log(e);
@@ -133,33 +131,8 @@ export default {
     },
 
     refreshList() {
-      this.retrieveTutorials();
+      this.retrieveSellOffers();
     },
-
-    removeAllTutorials() {
-      TutorialDataService.deleteAll()
-        .then((response) => {
-          console.log(response.data);
-          this.refreshList();
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-
-    searchTitle() {
-      TutorialDataService.findByTitle(this.title)
-        .then((response) => {
-          // this.tutorials = response.data.map(this.getDisplayTutorial);
-          console.log("fuck you");
-          console.log(response.data);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-
-    
 
     downloadCoupon() {
       // this.$router.push({ name: "tutorial-details", params: { id: id } });
@@ -179,23 +152,16 @@ export default {
 
     productSent() {
       this.showModal = true;
-      console.log("id in product sent")
-      console.log(this.productId)
-
-      //get one product with sellOfferId
-      //set send true
-
       var data = {
-        sent: true
+        sent: true,
+        images: this.images,
       };
 
-      ProductServices.update(this.productId, data)
+      ProductServices.updateSent(this.productId, data)
         .then((response) => {
-          console.log("i am in update bitch")
           console.log(response.data)
-          response.data;
-          this.product = response.data;
-          
+
+          //TO DO do something after update
         })
         .catch((e) => {
           console.log(e);
@@ -220,19 +186,9 @@ export default {
       //update disabled
       console.log(newValue)
     },
-
-    getDisplayTutorial(tutorial) {
-      return {
-        id: tutorial._id,
-        price: tutorial.brand,
-        // title: tutorial.title.length > 30 ? tutorial.title.substr(0, 30) + "..." : tutorial.title,
-        // price: tutorial.description.length > 30 ? tutorial.description.substr(0, 30) + "..." : tutorial.description,
-        // createDate: tutorial.published ? "Published" : "Pending",
-      };
-    },
   },
   mounted() {
-    this.retrieveTutorials();
+    this.retrieveSellOffers();
   },
 };
 </script>

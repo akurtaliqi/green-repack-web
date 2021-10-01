@@ -24,6 +24,10 @@ class ProductServices {
   update(id, data) {
     return http.put(`/product/${id}`, data);
   }
+
+  updateSent(id, data) {
+    return http.put(`/product/sent/${id}`, data);
+  }
 }
 
 export default new ProductServices();
