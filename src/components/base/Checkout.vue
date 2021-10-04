@@ -3,7 +3,7 @@
     <stripe-checkout
       ref="checkoutRef"
       mode="payment"
-      :pk="publishableKey"
+      :pk="this.test"
       :line-items="lineItems"
       :success-url="successURL"
       :cancel-url="cancelURL"
@@ -22,15 +22,16 @@ export default {
   data () {
     this.publishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
     return {
+      test: 'pk_test_51JfOTNKqXtPaxbjm5VCMhW6jQ3CWic49obCswsSYWLT7sv9WzIZ0WhEnSEHvsTn8JLZwLnc3YdqgZsJCIn8TpRRs00JfFN4XaB',
       loading: false,
       lineItems: [
         {
-          price: 'some-price-id', // The id of the one-time price you created in your Stripe dashboard
+          price: 'price_1JgaqyKqXtPaxbjm1G3A9SVI', // The id of the one-time price you created in your Stripe dashboard
           quantity: 1,
         },
       ],
-      successURL: 'your-success-url',
-      cancelURL: 'your-cancel-url',
+      successURL: "https://greenrepack-stripe.ultrahook.com",
+      cancelURL: 'https://greenrepack-stripe.ultrahook.com',
     };
   },
   methods: {

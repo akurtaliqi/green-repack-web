@@ -22,8 +22,8 @@
           disable-pagination
           :hide-default-footer="true"
         >
-          <template v-slot:[`item.number`]>
-            <v-icon small>1</v-icon>
+          <template slot="item.number" slot-scope="props">
+            {{ props.index + 1 }}
           </template>
           <template v-slot:[`item.actions`]="{ item }">
             <v-icon small @click="showProduct(item._id)">mdi-pencil</v-icon>

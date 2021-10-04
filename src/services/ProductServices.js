@@ -28,6 +28,10 @@ class ProductServices {
   updateSent(id, data) {
     return http.put(`/product/sent/${id}`, data);
   }
+
+  test() {
+    return http.post("/create-checkout-session", data);
+  }
 }
 
 export default new ProductServices();

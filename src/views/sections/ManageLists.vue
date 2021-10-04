@@ -17,39 +17,27 @@
 import TutorialDataService from "../../services/SellOfferServices.js";
 import { AUTHGETTER, LOGINUSERFROMLOCALSTORAGE, USERLOGGEDINGETTER, SELLERID, USERPROFILE } from "@/store/constants";
 import ManageProductStates from "../../components/base/ManageProductStates.vue";
-import LoginBuyer from "../../components/base/LoginBuyer.vue";
-import LoginSeller from "../../components/base/LoginSeller.vue";
-import LoginAdmin from "../../components/base/LoginAdmin.vue";
+import ManageProductModels from "../../components/base/ManageProductModels.vue";
+import ManageProductCategories from "../../components/base/ManageProductCategories.vue";
+import ManageWarehouses from "../../components/base/ManageWarehouses.vue";
 export default {
   name: 'SectionManageLists',
   data() {
     return {
-      tutorials: [],
-      title: "",
-      headers: [
-        { text: "Title", align: "start", sortable: false, value: "title" },
-        { text: "Description", value: "description", sortable: false },
-        { text: "Status", value: "status", sortable: false },
-        { text: "Actions", value: "actions", sortable: false },
-      ],
-
       tabs: [
         { text: "États des produits", link: "manage-product-states" },
-        { text: "Modèles des produits", link: "login-admin"},
-        { text: "Catégories des produits", link: "login-buyer"},
-        { text: "Entrepôts", link: "login-seller"},
+        { text: "Modèles des produits", link: "manage-product-models"},
+        { text: "Catégories des produits", link: "manage-product-categories"},
+        { text: "Entrepôts", link: "manage-warehouses"},
       ],
       selected: "manage-product-states",
-
-      /*tabs: ["manage-product-states", "Contact"],
-      selected: "manage-product-states"*/
     };
   },
   components: {
     ManageProductStates,
-    LoginBuyer,
-    LoginSeller,
-    LoginAdmin
+    ManageProductModels,
+    ManageProductCategories,
+    ManageWarehouses
   },
   methods: {
     retrieveTutorials() {
@@ -128,10 +116,5 @@ export default {
 </script>
 
 <style scroped>
-.list {
-  max-width: auto;
-}
-.tabs {
-  width:auto;
-}
+
 </style>

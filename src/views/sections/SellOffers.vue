@@ -22,15 +22,15 @@
           disable-pagination
           :hide-default-footer="true"
         >
-          <template v-slot:[`item.actions`]="{ item }">
-            <v-icon small class="mr-2" @click="downloadCoupon(item.id)">mdi-upload</v-icon>
+          <template v-slot:[`item.bonlivraison`]>
+            <v-icon small class="mr-2" @click.prevent="downloadCoupon()">mdi-upload</v-icon>
             <!--v-icon small v-if="item.couponDownloaded==true" @click="sendProduct(item.id)">mdi-send</v-icon-->
             <!--v-icon small @click="sendProduct(item.productId)">mdi-send</v-icon-->
           </template>
-          <template v-slot:[`item.number`]>
-            <v-icon small>1</v-icon>
+          <template slot="item.number" slot-scope="props">
+            {{ props.index + 1 }}
           </template>
-          <template v-slot:[`item.boncommande`]="{ item }">
+          <template v-slot:[`item.actions`]="{ item }">
             <v-checkbox
              color="info"
              label="Envoyer produit"
@@ -49,8 +49,8 @@
           <v-card-text>Avez-vous envoyé votre produit ?</v-card-text>
           <v-card-actions>
             <v-btn color="warning" text @click="cancel()"> Annuler </v-btn>
-            <v-btn color="error" text @click="cancel()"> Refuser </v-btn>
-            <v-btn color="success" class="mr-4" text @click="productSent()"> Accepter </v-btn>
+            <!--v-btn color="error" text @click="cancel()"> Refuser </v-btn-->
+            <v-btn color="success" class="mr-4" text @click="productSent()"> Oui </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -74,13 +74,25 @@ export default {
       productId: null,
       sent: false,
       images:null,
+      index: null,
+      indexes:null,
       headers: [
         { text: "#", align: "start", sortable: false, value: "number" },
         { text: "Price", align: "start", sortable: false, value: "price" },
+        { text: "Bon de livraison",align: "start", value: "bonlivraison", sortable: false },
         { text: "Actions",align: "start", value: "actions", sortable: false },
-        { text: "Bon de commande",align: "start", value: "boncommande", sortable: false },
       ],
     };
+  },
+  computed: {
+    itemsWithIndex () {
+      return this.sellOffers.map(
+        (items, index) => ({
+          ...items,
+          index: index + 1
+        }))
+    },
+    
   },
   methods: {
     getProductBySellOffer(id) {
@@ -90,6 +102,9 @@ export default {
           this.productId = response.data._id;
           this.product = response.data;
           this.images = response.data.images;
+
+          // TO DO remove if this.product.sent === true
+          // this.sellOffers.pop produc
           
         })
         .catch((e) => {
@@ -137,6 +152,8 @@ export default {
     downloadCoupon() {
       // this.$router.push({ name: "tutorial-details", params: { id: id } });
       //TODO fix couponDownloaded
+      const url = 'http://localhost:3000/uploads/bon_livraison_0000_0000_0000_0000.pdf';
+      window.location.href = url;
       this.couponDownloaded=true;
     },
 
@@ -160,6 +177,8 @@ export default {
       ProductServices.updateSent(this.productId, data)
         .then((response) => {
           console.log(response.data)
+          this.refreshList();
+          this.showModal = false;
 
           //TO DO do something after update
         })
@@ -167,6 +186,10 @@ export default {
           console.log(e);
         });
       
+    },
+
+    refreshList() {
+      this.retrieveSellOffers();
     },
 
     cancel() {
@@ -189,6 +212,7 @@ export default {
   },
   mounted() {
     this.retrieveSellOffers();
+    console.log(this.index)
   },
 };
 </script>

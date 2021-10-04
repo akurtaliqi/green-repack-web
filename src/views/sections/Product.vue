@@ -1,5 +1,23 @@
 <template>
   <div v-if="currentProduct" class="edit-form py-3">
+    <!--div class="product">
+        <img
+          src="https://i.imgur.com/EHyR2nP.png"
+          alt="The cover of Stubborn Attachments"
+        />
+        <div class="description">
+          <h3>Stubborn Attachments</h3>
+          <h5>$20.00</h5>
+        </div>
+      </div>
+      <form action="http://localhost:3000/create-checkout-session" method="test">
+        <button type="submit" id="checkout-button">Checkout</button>
+      </form-->
+
+      <base-checkout/>
+
+
+
     <p class="headline">Détails du produit</p>
 
     <v-carousel>
@@ -56,27 +74,6 @@
         >
           Retour
         </v-btn>
-        <v-btn 
-          text 
-          outlined
-          color="primary accent-2"
-          plain
-          elevation="2"
-          :to="submit"
-          v-if="userProfile === 'buyer'"
-        >
-          Acheter
-        </v-btn>
-        <stripe-checkout
-          ref="checkoutRef"
-          mode="payment"
-          :pk="publishableKey"
-          :line-items="lineItems"
-          :success-url="successURL"
-          :cancel-url="cancelURL"
-          @loading="v => loading = v"
-        />
-        <button @click="submit">Pay now!</button>
       </v-card-actions>
     </v-card>
     <p class="mt-3">{{ message }}</p>
@@ -89,32 +86,20 @@
 
 <script>
 import ProductServices from '../../services/ProductServices.js';
-import { AUTHGETTER, LOGINUSERFROMLOCALSTORAGE, USERLOGGEDINGETTER, SELLERID, USERPROFILE } from "@/store/constants";
 import SellOfferServices from '../../services/SellOfferServices.js';
-import { StripeCheckout } from '@vue-stripe/vue-stripe';
-import { StripePlugin } from '@vue-stripe/vue-stripe';
-
+import StripeCheckout from "../../components/base/Checkout.vue";
 export default {
+  components: {
+    StripeCheckout,
+  },
   name: "product",
   data() {
-    this.publishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
     return {
       currentProduct: null,
       sellOffer:null,
       message: "",
       images: [],
       userProfile: null,
-
-      loading: false,
-      lineItems: [
-        {
-          price: '30', // The id of the recurring price you created in your Stripe dashboard
-          quantity: 1,
-        },
-      ],
-      successURL: 'https://localhost:3000/webhook',
-      cancelURL: 'your-cancel-url',
-      
     };
   },
   methods: {
@@ -185,17 +170,14 @@ export default {
     goBackToProducts() {
       this.$router.push("/Products");
     },
-
-    submit () {
-      // You will be redirected to Stripe's secure checkout page
-      this.$refs.checkoutRef.redirectToCheckout();
-    },
   },
   mounted() {
     this.message = "";
     this.getProduct(this.$route.params.id);
+    
     // this.getSellOffer(this.$route.params.id);
     this.userProfile = localStorage.userType;
+    console.log(this.$route.params.id);
   },
 };
 </script>

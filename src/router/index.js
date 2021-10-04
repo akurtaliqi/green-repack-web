@@ -23,6 +23,11 @@ const router = new Router({
           component: () => import("@/views/home/Index.vue")
         },
         {
+          path: "checkoutsuccess",
+          name: "CheckOutSuccess",
+          component: () => import("@/views/checkout/Index.vue")
+        },
+        {
           path: "about",
           name: "About",
           component: () => import("@/views/about/Index.vue"),
