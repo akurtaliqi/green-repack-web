@@ -9,7 +9,7 @@
     "lint": "vue-cli-service lint",
     "postversion": "node scripts/postversion.js",
     "postinstall": "npm run build",
-    "start": "node main.js",
+    "start": "node ./main.js",
     "heroku-postinstall": "npm install && npm run build"
   },
   "proxy": "http://localhost:8081",
