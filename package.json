@@ -8,7 +8,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "postversion": "node scripts/postversion.js",
-    "start": "babel-node ./src/main.js",
+    "start": "babel-node main.js",
     "heroku-postinstall": "yarn install && yarn build"
   },
   "proxy": "http://localhost:8081",
