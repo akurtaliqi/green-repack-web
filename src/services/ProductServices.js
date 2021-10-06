@@ -2,7 +2,7 @@ import http from '../http-common/http-common';
 
 class ProductServices {
   getAll () {
-    return http.get("/product");
+    return http.get("/product/sell");
   }
 
   getAllProductsToValidate () {

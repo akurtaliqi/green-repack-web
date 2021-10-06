@@ -18,7 +18,7 @@
 
         <v-data-table
           :headers="headers"
-          :items="sellOffers"
+          :items="arr3"
           disable-pagination
           :hide-default-footer="true"
         >
@@ -60,11 +60,14 @@
 <script>
 import ProductServices from '../../services/ProductServices.js';
 import SellOfferServices from '../../services/SellOfferServices.js';
+import axios from 'axios';
 export default {
   name: 'SectionSelloffers',
   data() {
     return {
       sellOffers: [],
+      products: [],
+      arr3: [],
       title: "",
       showModal:false,
       disabled:false,
@@ -79,10 +82,16 @@ export default {
       headers: [
         { text: "#", align: "start", sortable: false, value: "number" },
         { text: "Price", align: "start", sortable: false, value: "price" },
+        { text: "Description", align: "start", sortable: false, value: "description" },
         { text: "Bon de livraison",align: "start", value: "bonlivraison", sortable: false },
         { text: "Actions",align: "start", value: "actions", sortable: false },
       ],
+      props: ['postTitle'],
     };
+  },
+  mounted() {
+    this.retrieveSellOffers();
+    this.getAllProducts();
   },
   computed: {
     itemsWithIndex () {
@@ -92,59 +101,56 @@ export default {
           index: index + 1
         }))
     },
-    
   },
-  methods: {
-    getProductBySellOffer(id) {
-      ProductServices.get(id)
-        .then((response) => {
-          response.data;
-          this.productId = response.data._id;
-          this.product = response.data;
-          this.images = response.data.images;
 
-          // TO DO remove if this.product.sent === true
-          // this.sellOffers.pop produc
-          
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+  methods: {
+    /*async retrieveSellOffers() {
+      this.sellerId = localStorage.sellerId;
+      this.sellOffers = (await axios.get('https://test-green-repack-back.herokuapp.com/api/selloffer/', { params: { sellerId: '615b1575fde0190ad80c3410' } })).data;
+      console.log("this.sellOffers")
+      console.log(this.sellOffers)
     },
+    async getAllProducts() {
+      this.products = (await axios.get('https://test-green-repack-back.herokuapp.com/api/product')).data;
+      console.log("this.products")
+      console.log(this.products)
+    },*/
     retrieveSellOffers() {
       this.sellerId = localStorage.sellerId;
       SellOfferServices.getAllBySellerId(this.sellerId)
         .then((response) => {
-          let sellOffer = [];
-          let test2 = null;
-          let subTab = [];
-          // let product = [];
-          /*for (let i = 0; i < response.data.length; i++) {
-            sellOffer.push(response.data[i])
-            //console.log(response.data.productId)
-            // test.push(([response.data[i].price, this.product]).join());
-            this.getProductBySellOffer(response.data[i].productId)
-            
-          }*/
-
-          /*for (let j = 0; j < sellOffer.length; j++) {
-            console.log("sellOffer[j]")
-            console.log(sellOffer[j])
-            for (let k = 0; k < this.product.length; k++) {
-            console.log("this.product[k]")
-            console.log(this.product[k])
-            }
-            
-          }*/
-
-
           this.sellOffers = response.data;
+          console.log("this.sellOffers");
+          console.log(this.sellOffers);
         })
         .catch((e) => {
           console.log(e);
         });
     },
-
+    getAllProducts() {
+      ProductServices.getAll()
+        .then((response) => {
+          this.products = response.data;
+          console.log("this.products");
+          console.log(this.products);
+        })
+        .catch((e) => {
+          console.log(e);
+      });
+    },
+    getProductBySellOffer(id) {
+      ProductServices.get(id)
+        .then((response) => {
+          this.productId = response.data._id;
+          this.product = response.data;
+          this.images = response.data.images;
+          // TO DO remove if this.product.sent === true
+          
+        })
+        .catch((e) => {
+          console.log(e);
+      });
+    },
     refreshList() {
       this.retrieveSellOffers();
     },
@@ -188,6 +194,25 @@ export default {
       
     },
 
+    productSent() {
+      this.showModal = true;
+      var data = {
+        sent: true,
+        images: this.images,
+      };
+      ProductServices.updateSent(this.productId, data)
+        .then((response) => {
+          console.log(response.data)
+          this.refreshList();
+          this.showModal = false;
+          //TO DO do something after update
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+      
+    },
+
     refreshList() {
       this.retrieveSellOffers();
     },
@@ -210,10 +235,7 @@ export default {
       console.log(newValue)
     },
   },
-  mounted() {
-    this.retrieveSellOffers();
-    console.log(this.index)
-  },
+  
 };
 </script>
 

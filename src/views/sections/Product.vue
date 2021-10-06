@@ -1,30 +1,12 @@
 <template>
   <div v-if="currentProduct" class="edit-form py-3">
-    <!--div class="product">
-        <img
-          src="https://i.imgur.com/EHyR2nP.png"
-          alt="The cover of Stubborn Attachments"
-        />
-        <div class="description">
-          <h3>Stubborn Attachments</h3>
-          <h5>$20.00</h5>
-        </div>
-      </div>
-      <form action="http://localhost:3000/create-checkout-session" method="test">
-        <button type="submit" id="checkout-button">Checkout</button>
-      </form-->
-
-      <base-checkout/>
-
-
-
     <p class="headline">Détails du produit</p>
 
     <v-carousel>
       <v-carousel-item
         v-for="(item,i) in images"
         :key="i"
-        :src="'http://localhost:3000/'+images[i]"
+        :src="'https://test-green-repack-back.herokuapp.com/'+images[i]"
         reverse-transition="fade-transition"
         transition="fade-transition"
         height="400"
@@ -37,6 +19,20 @@
       tile
     >
       <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>Titre</v-list-item-title>
+          <v-list-item-subtitle>{{currentProduct.title}}</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>Description</v-list-item-title>
+          <v-list-item-subtitle>{{currentProduct.description}}</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item two-line>
         <v-list-item-content>
           <v-list-item-title>Marque</v-list-item-title>
           <v-list-item-subtitle>{{currentProduct.brand}}</v-list-item-subtitle>
@@ -52,8 +48,8 @@
 
       <v-list-item two-line>
         <v-list-item-content>
-          <v-list-item-title>Caractéristiques</v-list-item-title>
-          <v-list-item-subtitle>{{this.sellOffer}}</v-list-item-subtitle>
+          <v-list-item-title>Prix</v-list-item-title>
+          <v-list-item-subtitle>{{currentProduct.sellPrice}}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
@@ -73,6 +69,9 @@
           v-if="userProfile === 'buyer'"
         >
           Retour
+        </v-btn>
+        <v-btn>
+          <base-checkout/>
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -176,6 +175,8 @@ export default {
     this.getProduct(this.$route.params.id);
     
     // this.getSellOffer(this.$route.params.id);
+    console.log("process.env.STRIPE_PUBLISHABLE_KEY")
+    console.log(process.env.production.VUE_APP_STRIPE_PUBLISHABLE_KEY)
     this.userProfile = localStorage.userType;
     console.log(this.$route.params.id);
   },

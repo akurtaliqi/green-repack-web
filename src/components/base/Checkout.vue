@@ -3,13 +3,13 @@
     <stripe-checkout
       ref="checkoutRef"
       mode="payment"
-      :pk="this.test"
+      :pk="publishableKey"
       :line-items="lineItems"
       :success-url="successURL"
       :cancel-url="cancelURL"
       @loading="v => loading = v"
     />
-    <button @click="submit">Pay now!</button>
+    <button @click="submit">Acheter</button>
   </div>
 </template>
 
@@ -20,9 +20,10 @@ export default {
     StripeCheckout,
   },
   data () {
-    this.publishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
+    
     return {
-      test: 'pk_test_51JfOTNKqXtPaxbjm5VCMhW6jQ3CWic49obCswsSYWLT7sv9WzIZ0WhEnSEHvsTn8JLZwLnc3YdqgZsJCIn8TpRRs00JfFN4XaB',
+      //test: process.env.STRIPE_PUBLISHABLE_KEY,
+      publishableKey : process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY,
       loading: false,
       lineItems: [
         {

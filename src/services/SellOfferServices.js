@@ -9,6 +9,10 @@ class SellOfferServices {
     return http.get(`/selloffer/seller/${id}`);
   }
 
+  getSellOfferByProductId (productId) {
+    return http.get(`/selloffer/${productId}`);
+  }
+
   get (id) {
     return http.get(`/selloffer/${id}`);
   }

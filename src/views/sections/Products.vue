@@ -29,7 +29,7 @@
                 max-width="370"
                 >
                     <v-img>
-                        <v-img :src="'http://localhost:3000/'+item.images[0]" height="300"/>
+                        <v-img :src="'https://test-green-repack-back.herokuapp.com/'+item.images[0]" height="300"/>
                     </v-img>
 
                   <v-card-title class="subheading font-weight-bold">

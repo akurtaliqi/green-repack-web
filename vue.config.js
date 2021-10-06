@@ -2,7 +2,7 @@ module.exports = {
   devServer: {
     disableHostCheck: true,
     port: 8081,
-    proxy: 'https://http://localhost:3000/api/product/',
+    // proxy: 'https://http://localhost:3000/api/product/',
   },
   transpileDependencies: [
     'vuetify',

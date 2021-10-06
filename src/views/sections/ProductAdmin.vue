@@ -4,7 +4,7 @@
     <v-carousel-item
       v-for="(item,i) in colors"
       :key="i"
-      :src="'http://localhost:3000/'+colors[i]"
+      :src="'https://test-green-repack-back.herokuapp.com/'+colors[i]"
       reverse-transition="fade-transition"
       transition="fade-transition"
       height="400"
@@ -119,13 +119,11 @@
             <v-checkbox
               v-model="received"
               label="Produit  reçu"
-              value="true"
               hide-details
             ></v-checkbox>
             <v-checkbox
               v-model="verified"
               label="Produit verifié"
-              value="true"
               hide-details
             ></v-checkbox>
           </v-col>
@@ -140,10 +138,69 @@
         Annuler
       </v-btn>
 
-       <v-btn color="success" small class="mr-2" @click="updateProduct">
-        Valider
+       <v-btn color="success" v-if="received == true && verified == true" small class="mr-2" @click="setSellPrice(currentProduct._id)">
+        Mettre en vente
       </v-btn>
     </v-form>
+    <v-dialog v-model="showModal" persistent max-width="550px">
+      
+        <v-card>
+          <v-row>
+          <v-col cols="10">
+              <v-card-title>Mise en vente du produit</v-card-title>
+          </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="8">
+              <v-card-text>Prix du produit (sans marge) :</v-card-text>
+            </v-col>
+            <v-col cols="4">
+              <v-card-text>{{this.price}} €</v-card-text>
+            </v-col>
+          </v-row>
+          
+
+          <v-row>
+            <v-col cols="8">
+              <v-card-text>Indiquez la marge à appliquer :</v-card-text>
+            </v-col>
+            <v-col cols="2">
+              <v-text-field
+                label="Marge"
+                value="30"
+                suffix="%"
+                type="number"
+                v-model="marginProduct"
+                @change="test()"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="8">
+              <v-card-text>Prix du produit (avec marge) :</v-card-text>
+            </v-col>
+            <v-col cols="4">
+              <v-card-text>{{this.priceWithMargin}} €</v-card-text>
+            </v-col>
+          </v-row>
+          <!--v-card-text>Prix du produit (offre de vente) : {{this.marginProduct}} € </v-card-text>
+          <v-card-text>Prix du produit avec marge (30% par défaut) : {{this.marginProduct}} € </v-card-text>
+          <v-card-text>Indiquez la marge souhaitée : {{this.marginProduct}} % </v-card-text>
+          <v-text-field
+              v-model="marginProduct"
+              hide-details
+              single-line
+              type="number"
+            /-->
+          <v-card-actions>
+            <v-btn color="warning" text @click="cancel()"> Annuler </v-btn>
+            <!--v-btn color="error" text @click="cancel()"> Refuser </v-btn-->
+            <v-btn color="success" class="mr-4" text @click="updateProduct()"> Valider </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
     <p class="mt-3">{{ message }}</p>
   </div>
@@ -160,6 +217,7 @@ import ProductModelServices from '../../services/ProductModelServices.js';
 import ProductStateServices from '../../services/ProductStateServices.js';
 import ProductCategoryService from '../../services/ProductCategoryService.js';
 import WarehouseServices from '../../services/WarehouseServices.js';
+import SellOfferServices from '../../services/SellOfferServices.js';
 
 export default {
   name: "product",
@@ -186,6 +244,12 @@ export default {
       productId: this.$route.params.id,
 
       images: null,
+
+
+      showModal: false,
+      marginProduct: 30,
+      price: 0,
+      priceWithMargin: 0,
     };
   },
   methods: {
@@ -239,6 +303,7 @@ export default {
         sent: this.currentProduct.sent,
         received: this.received,
         verified: this.verified,
+        sellPrice: this.priceWithMargin,
         productStateId: this.currentProduct.productStateId,
         sellerId: this.currentProduct.sellerId,
         categoryId: this.currentProduct.categoryId,
@@ -249,6 +314,7 @@ export default {
       ProductServices.update(this.currentProduct._id, data)
         .then((response) => {
           console.log(response.data);
+          this.$router.push("/Products");
         })
         .catch((e) => {
           console.log(e);
@@ -309,6 +375,44 @@ export default {
           console.log(e);
         });
     },
+
+    setSellPrice(productId) {
+      console.log("productId")
+      console.log(productId)
+      this.showModal = true;
+      // this.getSellOfferByProductId(productId);
+      this.calculatePrice();
+     
+    },
+
+    calculatePrice () {
+      this.priceWithMargin = this.price + (this.price * this.marginProduct/100);
+    },
+
+    cancel() {
+      this.showModal = false;
+      //get one product with sellOfferId
+      //set send true
+
+    },
+
+    getSellOfferByProductId(productId) {
+      SellOfferServices.getSellOfferByProductId(productId)
+        .then((response) => {
+          console.log("sellOfferByPid")
+          console.log(response.data.price)
+          this.price = response.data.price;
+          // this.productId = response.data._id;
+          // TO DO remove if this.product.sent === true
+        })
+        .catch((e) => {
+          console.log(e);
+      });
+    },
+    test() {
+      // this.marginProduct = newMargin;
+      this.calculatePrice();
+    }
   },
   mounted() {
     this.message = "";
@@ -318,6 +422,7 @@ export default {
     this.getProductStates();
     this.getProductModels();
     this.getWarehouses();
+    this.getSellOfferByProductId(this.$route.params.id);
   },
 };
 </script>
@@ -326,5 +431,9 @@ export default {
 .edit-form {
   max-width: 500px;
   margin: auto;
+}
+
+div.row {
+  margin:0px !important;
 }
 </style>
