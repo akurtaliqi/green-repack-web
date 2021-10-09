@@ -15,6 +15,7 @@
 
 <script>
 import { StripeCheckout } from '@vue-stripe/vue-stripe';
+import ProductServices from '../../services/ProductServices.js';
 export default {
   components: {
     StripeCheckout,
@@ -22,17 +23,20 @@ export default {
   data () {
     
     return {
-      //test: process.env.STRIPE_PUBLISHABLE_KEY,
-      publishableKey : process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY,
+      
+      publishableKey :  process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY,
       loading: false,
+      product: null,
+      amount: null,
+      images:[],
       lineItems: [
         {
           price: 'price_1JgaqyKqXtPaxbjm1G3A9SVI', // The id of the one-time price you created in your Stripe dashboard
           quantity: 1,
         },
       ],
-      successURL: "https://greenrepack-stripe.ultrahook.com",
-      cancelURL: 'https://greenrepack-stripe.ultrahook.com',
+      successURL: "http://localhost:8081/checkoutsuccess",
+      cancelURL: 'http://localhost:8081/products/'+this.$route.params.id,
     };
   },
   methods: {
@@ -40,6 +44,31 @@ export default {
       // You will be redirected to Stripe's secure checkout page
       this.$refs.checkoutRef.redirectToCheckout();
     },
+    getProduct(id) {
+      ProductServices.get(id)
+        .then((response) => {
+          this.product = response.data;
+          this.images = response.data.images;
+          this.amount = response.data.sellPrice;
+          console.log(response.data.images)
+          console.log(this.amount);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    },
   },
+  created(){
+    this.publishableKey = process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY
+    console.log( process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY);
+    this.getProduct(this.$route.params.id);
+  },
+  mount(){
+    this.publishableKey = process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY
+    console.log( process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY);
+    
+    console.log(product)
+  }
+
 };
 </script>

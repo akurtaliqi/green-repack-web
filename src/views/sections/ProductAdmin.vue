@@ -261,6 +261,8 @@ export default {
 
           this.categoryId = response.data.categoryId;
           this.productStateId = response.data.productStateId;
+          console.log("response.data.productStateId")
+          console.log(response.data.productStateId)
           this.productModelId = response.data.productModelId;
           this.images = response.data.images;
 

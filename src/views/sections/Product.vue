@@ -175,8 +175,6 @@ export default {
     this.getProduct(this.$route.params.id);
     
     // this.getSellOffer(this.$route.params.id);
-    console.log("process.env.STRIPE_PUBLISHABLE_KEY")
-    console.log(process.env.production.VUE_APP_STRIPE_PUBLISHABLE_KEY)
     this.userProfile = localStorage.userType;
     console.log(this.$route.params.id);
   },

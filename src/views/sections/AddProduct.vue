@@ -172,7 +172,7 @@ export default {
        if (this.title && this.description && this.brand && this.features && this.categoryId && this.productStateId) {
         this.error = false;
         this.sellerId = localStorage.sellerId;
-        var data = [
+        let data = [
           "title",
           "description",
           "brand",
@@ -187,6 +187,8 @@ export default {
           fd.append(item, this[item]);
         });
         fd.append("productModelId", this.productModelId)
+        console.log("this.productStateId")
+        console.log(this.productStateId)
         this.images.map((file, index) => {
           fd.append('images${index}', file);
         });
@@ -232,9 +234,6 @@ export default {
 
     },
     createSellOffer(productId, sellOfferPrice) {
-      console.log(productId)
-      console.log(sellOfferPrice)
-      console.log(this.sellerId)
       var data = {
         productId: productId,
         sellOfferPrice: sellOfferPrice,

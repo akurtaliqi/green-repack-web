@@ -17,6 +17,7 @@ import {
   SELLERID,
   USERPROFILE
 } from "../constants";
+import authHeader from "./auth-header";
 // State object
 const state = {
   auth: false,
@@ -53,6 +54,7 @@ const mutations = {
     state.sellerId = payload.sellerId;
     state.userType = payload.userType;
     localStorage.setItem("token", JSON.stringify(payload));
+    localStorage.setItem("tokenTest", payload.token);
     localStorage.setItem("sellerId", payload.sellerId);
     localStorage.setItem("userType", payload.userType);
     
@@ -95,12 +97,13 @@ const actions = {
   },
   [LOGINSELLERACTION]: async ({ commit }, { email, password }) => {
     try {
-      const response = await HTTP.post("/seller/auth/login", {
+      const response = (await HTTP.post("/seller/auth/login", {
         email,
         password
-      });
+      }));
       if (response.status === 200) {
         response.data.userType = "seller";
+        console.log(response.data)
         commit(LOGINUSERSUCCESS, response.data);
         return true;
       }

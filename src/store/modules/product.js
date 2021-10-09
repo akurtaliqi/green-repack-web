@@ -1,4 +1,5 @@
 import HTTP from "../../http-common/http-common";
+import authHeader from './auth-header';
 import {
   CREATE_PRODUCT_ACTION,
   PRODUCTCREATEDSUCCESS,

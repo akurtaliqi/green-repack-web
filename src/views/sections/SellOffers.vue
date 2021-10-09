@@ -21,11 +21,10 @@
           :items="arr3"
           disable-pagination
           :hide-default-footer="true"
+          no-data-text="Aucune offre de vente en cours"
         >
           <template v-slot:[`item.bonlivraison`]>
             <v-icon small class="mr-2" @click.prevent="downloadCoupon()">mdi-upload</v-icon>
-            <!--v-icon small v-if="item.couponDownloaded==true" @click="sendProduct(item.id)">mdi-send</v-icon-->
-            <!--v-icon small @click="sendProduct(item.productId)">mdi-send</v-icon-->
           </template>
           <template slot="item.number" slot-scope="props">
             {{ props.index + 1 }}
@@ -36,8 +35,6 @@
              label="Envoyer produit"
              v-if="sent === false"
             @click="sendProduct(item.productId)"></v-checkbox>
-            <!--v-icon small v-if="item.couponDownloaded==true" @click="sendProduct(item.id)">mdi-send</v-icon-->
-            <!--v-icon small @click="sendProduct(item.productId)">mdi-send</v-icon-->
           </template>
         </v-data-table>
       </v-card>
@@ -46,7 +43,7 @@
   <v-dialog v-model="showModal" persistent max-width="500px">
         <v-card>
           <v-card-title>Envoyer produit</v-card-title>
-          <v-card-text>Avez-vous envoyé votre produit ?</v-card-text>
+          <v-card-text>Avez-vous envoyé votre produit avec le bon de commande ?</v-card-text>
           <v-card-actions>
             <v-btn color="warning" text @click="cancel()"> Annuler </v-btn>
             <!--v-btn color="error" text @click="cancel()"> Refuser </v-btn-->
@@ -60,6 +57,7 @@
 <script>
 import ProductServices from '../../services/ProductServices.js';
 import SellOfferServices from '../../services/SellOfferServices.js';
+import authHeader from './../../store/modules/auth-header.js';
 import axios from 'axios';
 export default {
   name: 'SectionSelloffers',
@@ -71,7 +69,7 @@ export default {
       title: "",
       showModal:false,
       disabled:false,
-      sellerId:null,
+      userId:null,
       couponDownloaded:false,
       product: null,
       productId: null,
@@ -82,16 +80,17 @@ export default {
       headers: [
         { text: "#", align: "start", sortable: false, value: "number" },
         { text: "Price", align: "start", sortable: false, value: "price" },
-        { text: "Description", align: "start", sortable: false, value: "description" },
+        { text: "Description du produit", align: "start", sortable: false, value: "description" },
         { text: "Bon de livraison",align: "start", value: "bonlivraison", sortable: false },
         { text: "Actions",align: "start", value: "actions", sortable: false },
       ],
       props: ['postTitle'],
     };
   },
-  mounted() {
-    this.retrieveSellOffers();
-    this.getAllProducts();
+  async mounted() {
+    await this.retrieveSellOffers();
+    await this.getAllProducts();
+    this.mergeSellOffersProducts();
   },
   computed: {
     itemsWithIndex () {
@@ -104,9 +103,20 @@ export default {
   },
 
   methods: {
-    /*async retrieveSellOffers() {
-      this.sellerId = localStorage.sellerId;
-      this.sellOffers = (await axios.get('https://test-green-repack-back.herokuapp.com/api/selloffer/', { params: { sellerId: '615b1575fde0190ad80c3410' } })).data;
+    async retrieveSellOffers() {
+      console.log("process.env.VUE_APP_JWT_SECRET_TOKEN")
+      console.log(process.env.VUE_APP_JWT_SECRET_TOKEN)
+      this.userId = localStorage.sellerId;
+      console.log(this.userId)
+      this.sellOffers = (await axios({ 
+          method: 'get', 
+          url: `https://test-green-repack-back.herokuapp.com/api/selloffer/seller/${ this.userId}`,
+          headers: {Authorization: `Bearer ` + process.env.VUE_APP_JWT_SECRET_TOKEN},
+          params: {
+           id: this.userId,
+          }
+        },
+      )).data;
       console.log("this.sellOffers")
       console.log(this.sellOffers)
     },
@@ -114,8 +124,8 @@ export default {
       this.products = (await axios.get('https://test-green-repack-back.herokuapp.com/api/product')).data;
       console.log("this.products")
       console.log(this.products)
-    },*/
-    retrieveSellOffers() {
+    },
+    /*retrieveSellOffers() {
       this.sellerId = localStorage.sellerId;
       SellOfferServices.getAllBySellerId(this.sellerId)
         .then((response) => {
@@ -137,6 +147,17 @@ export default {
         .catch((e) => {
           console.log(e);
       });
+    },*/
+    mergeSellOffersProducts () {
+      console.log("ici")
+      console.log(this.products) // print empty array
+      console.log(this.sellOffers) // print empty array
+        for (var i = 0; i < this.sellOffers.length; i++) {
+          if (this.sellOffers[i].productId === this.products[i]._id) {
+            this.arr3.push({id: this.sellOffers[i]._id, price: this.sellOffers[i].price, description: this.products[i].description});
+        }
+      }
+      
     },
     getProductBySellOffer(id) {
       ProductServices.get(id)
@@ -165,12 +186,10 @@ export default {
 
     sendProduct(id) {
       this.showModal = true;
-
       console.log(id)
       //get one product with sellOfferId
       //set send true
       this.getProductBySellOffer(id);
-
     },
 
     productSent() {
@@ -185,7 +204,6 @@ export default {
           console.log(response.data)
           this.refreshList();
           this.showModal = false;
-
           //TO DO do something after update
         })
         .catch((e) => {
