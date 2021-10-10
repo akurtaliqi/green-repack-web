@@ -115,6 +115,8 @@ export default {
 };
 </script>
 
-<style scroped>
-
+<style>
+.icon {
+  padding-right: 15px;
+}
 </style>

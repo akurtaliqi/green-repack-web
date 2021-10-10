@@ -1,5 +1,6 @@
 <template>
   <div>
+    
     <base-info-card :title="title" :subtitle="subtitle" space="4" color="primary" />
 
     <form @submit.prevent="submit">
@@ -15,7 +16,7 @@
 </template>
 
 <script>
-import { LOGINBUYERACTION } from "@/store/constants";
+import { SIGNUPSELLERACTION } from "@/store/constants";
 export default {
   name: "SignupSeller",
 
@@ -38,14 +39,12 @@ export default {
   methods: {
     async submit() {
       this.$store
-        .dispatch(`Auth/${LOGINBUYERACTION}`, {
+        .dispatch(`Auth/${SIGNUPSELLERACTION}`, {
           email: this.email,
           password: this.password,
         })
-        .then((res) => {
-          if (res) {
-            this.$router.push("/");
-          }
+        .then(() => {
+          this.$router.push("/Login");
         });
     },
   },

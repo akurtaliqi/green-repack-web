@@ -78,9 +78,12 @@ export default {
       { title: "Mes offres de ventes", access: "seller", route: "selloffers", type: "link" },
       { title: "Vendre un produit", access: "seller", route: "addproduct", type: "link" },
       { title: "Login", access: "restricted", route: "Login", type: "link" },
-      { title: "About", access: "all", route: "About", type: "link" },
+      { title: "Mes commandes", access: "buyer", route: "orders", type: "link" },
+      
       { title: "Gestion des listes", access: "admin", route: "managelists", type: "link" },
       { title: "Gestion produits", access: "admin", route: "manageselloffers", type: "link" },
+      { title: "Mon profil", access: "buyer", route: "buyerprofil", type: "link" },
+      { title: "About", access: "all", route: "About", type: "link" },
       { title: "Logout", access: "loggedInOnly", type: "button" },
     ],
   }),

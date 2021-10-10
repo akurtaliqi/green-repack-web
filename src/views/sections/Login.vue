@@ -46,6 +46,8 @@
     <base-section
       id="login"
     >
+    <base-section-heading icon="mdi-vuetify" title="Connexion" />
+
       <v-container>
         <v-row>
           <v-col

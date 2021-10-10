@@ -39,6 +39,13 @@
         required
       ></v-text-field>
 
+      <v-text-field
+        v-model="greencoinsvalue"
+        label="Valeur green coins"
+        type="number"
+        required
+      ></v-text-field>
+
       <v-select
           :items="productStates"
           label="État du produit"
@@ -250,6 +257,8 @@ export default {
       marginProduct: 30,
       price: 0,
       priceWithMargin: 0,
+
+      greencoinsvalue: 0,
     };
   },
   methods: {
@@ -261,13 +270,9 @@ export default {
 
           this.categoryId = response.data.categoryId;
           this.productStateId = response.data.productStateId;
-          console.log("response.data.productStateId")
-          console.log(response.data.productStateId)
           this.productModelId = response.data.productModelId;
           this.images = response.data.images;
 
-          console.log(response.data.images)
-          console.log(response.data);
         })
         .catch((e) => {
           console.log(e);
@@ -285,7 +290,6 @@ export default {
       ProductServices.update(this.currentProduct.id, data)
         .then((response) => {
           this.currentProduct.published = status;
-          console.log(response.data);
         })
         .catch((e) => {
           console.log(e);
@@ -302,6 +306,7 @@ export default {
         description: this.currentProduct.description,
         brand: this.currentProduct.brand,
         features: this.currentProduct.features,
+        sold: this.currentProduct.sold,
         sent: this.currentProduct.sent,
         received: this.received,
         verified: this.verified,
@@ -310,12 +315,11 @@ export default {
         sellerId: this.currentProduct.sellerId,
         categoryId: this.currentProduct.categoryId,
         productModelId: this.currentProduct.productModelId,
+        greencoinsvalue: this.greencoinsvalue,
       };
 
-      console.log(data)
       ProductServices.update(this.currentProduct._id, data)
         .then((response) => {
-          console.log(response.data);
           this.$router.push("/Products");
         })
         .catch((e) => {
@@ -326,7 +330,6 @@ export default {
     deleteProduct() {
       ProductServices.delete(this.currentProduct.id)
         .then((response) => {
-          console.log(response.data);
           this.$router.push({ name: "products" });
         })
         .catch((e) => {
@@ -342,7 +345,6 @@ export default {
       ProductCategoryService.getAll()
         .then((response) => {
           this.categories = response.data;
-          console.log(response)
         })
         .catch((e) => {
           console.log(e);
@@ -361,8 +363,6 @@ export default {
       WarehouseServices.getAll()
         .then((response) => {
           this.warehouses = response.data;
-           console.log("warehouses")
-          console.log(response)
         })
         .catch((e) => {
           console.log(e);
@@ -379,8 +379,6 @@ export default {
     },
 
     setSellPrice(productId) {
-      console.log("productId")
-      console.log(productId)
       this.showModal = true;
       // this.getSellOfferByProductId(productId);
       this.calculatePrice();
@@ -401,8 +399,6 @@ export default {
     getSellOfferByProductId(productId) {
       SellOfferServices.getSellOfferByProductId(productId)
         .then((response) => {
-          console.log("sellOfferByPid")
-          console.log(response.data.price)
           this.price = response.data.price;
           // this.productId = response.data._id;
           // TO DO remove if this.product.sent === true

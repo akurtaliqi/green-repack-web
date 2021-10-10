@@ -2,6 +2,12 @@
   <div>
     <v-card class="mx-auto" tile>
         <v-card-title>Liste des états des catégories de produits</v-card-title>
+        <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+         @click="add()"
+        >Ajouter</v-btn>
+      </v-card-actions>
         <v-data-table
           :headers="headers"
           :items="data"
@@ -13,7 +19,7 @@
           </template>
           <template v-slot:[`item.actions`]="{ item }">
             <v-icon class="icon" small @click="edit(item.id)">mdi-pencil</v-icon>
-            <v-icon class="icon" small @click="add(item.id)">mdi-plus</v-icon>
+            <v-icon class="icon" small @click="add(item.id)">mdi-delete</v-icon>
           </template>
         </v-data-table>
       </v-card>

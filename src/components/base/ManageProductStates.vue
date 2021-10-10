@@ -19,6 +19,7 @@
           </template>
           <template v-slot:[`item.actions`]="{ item }">
             <v-icon class="icon" small @click="edit(item._id)">mdi-pencil</v-icon>
+            <v-icon class="icon" small @click="deleteProductState(item._id)">mdi-delete</v-icon>
           </template>
         </v-data-table>
       </v-card>
@@ -26,7 +27,7 @@
       <v-dialog v-model="showModal" max-width="500px">
         <v-card>
         <v-card-title>
-          <span class="text-h5">Modification de produit</span>
+          <span class="text-h5">{{this.modalTitle}}</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -67,7 +68,7 @@
           <v-btn
             color="blue darken-1"
             text
-            @click="showModal = false"
+            @click="refreshList"
           >
             Close
           </v-btn>
@@ -99,6 +100,8 @@ export default {
       name:null,
       description:null,
       decrease:null,
+      modalTitle:null,
+      create:false,
       headers: [
         { text: "#", align: "start", sortable: false, value: "number" },
         { text: "Nom", align: "start", sortable: false, value: "name" },
@@ -138,32 +141,19 @@ export default {
     edit(id) {
       this.showModal = true;
       console.log(id)
+      this.modalTitle="Modifier un état de produit"
       this.getProductById(id);
     },
     add() {
+      this.name=null,
+      this.description=null,
+      this.decrease=null,
       this.showModal=true;
-        console.log("add")
-        var data = {
-          name: this.$refs.name.value,
-          description:  this.$refs.name.description,
-          decrease:  this.$refs.name.decrease,
-        };
-        
-    },
-    create(data) {
-      ProductStateServices.createProductState(data)
-        .then((response) => {
-          // this.data = response.data;
-          //console.log(response.data);
-          // this.refreshList();
-          //this.showModal=false;
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      this.create=true;
+      this.modalTitle="Ajouter un état de produit"
     },
     save(){
-      if (this.name != null && this.description != null && this.decrease != null) {
+      if (this.name != null && this.description != null && this.decrease != null && this.create === false) {
         console.log(this.name)
           
           var data = {
@@ -171,13 +161,8 @@ export default {
             description: this.description,
             decrease: this.decrease,
           };
-          console.log(this.name)
-          console.log(this.description)
-          console.log(this.decrease)
           ProductStateServices.update(this.id, data)
             .then((response) => {
-              // this.data = response.data;
-              console.log(response.data);
               this.refreshList();
               this.showModal=false;
             })
@@ -185,13 +170,15 @@ export default {
               console.log(e);
             });
 
-      } else {
+      } else if (this.create===true) {
+        var data = {
+          name: this.name,
+          description:  this.description,
+          decrease:  this.decrease,
+        };
         ProductStateServices.createProductState(data)
         .then((response) => {
-          // this.data = response.data;
-          //console.log(response.data);
-          // this.refreshList();
-          //this.showModal=false;
+          this.refreshList();
         })
         .catch((e) => {
           console.log(e);
@@ -199,7 +186,11 @@ export default {
       }
       
     },
+    deleteProductState(id){
+
+    },
     refreshList() {
+      this.showModal=false;
       this.retrieveData();
     },
   },
@@ -214,4 +205,6 @@ export default {
 .tabs {
   width:auto;
 }
+
+
 </style>

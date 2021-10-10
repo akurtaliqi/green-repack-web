@@ -33,7 +33,6 @@
             <v-checkbox
              color="info"
              label="Envoyer produit"
-             v-if="sent === false"
             @click="sendProduct(item.productId)"></v-checkbox>
           </template>
         </v-data-table>
@@ -72,7 +71,6 @@ export default {
       userId:null,
       couponDownloaded:false,
       product: null,
-      productId: null,
       sent: false,
       images:null,
       index: null,
@@ -104,26 +102,19 @@ export default {
 
   methods: {
     async retrieveSellOffers() {
-      console.log("process.env.VUE_APP_JWT_SECRET_TOKEN")
-      console.log(process.env.VUE_APP_JWT_SECRET_TOKEN)
       this.userId = localStorage.sellerId;
-      console.log(this.userId)
       this.sellOffers = (await axios({ 
           method: 'get', 
-          url: `https://test-green-repack-back.herokuapp.com/api/selloffer/seller/${ this.userId}`,
+          url: `https://test-green-repack-back.herokuapp.com/api/selloffer/seller/${this.userId}`,
           headers: {Authorization: `Bearer ` + process.env.VUE_APP_JWT_SECRET_TOKEN},
           params: {
            id: this.userId,
           }
         },
       )).data;
-      console.log("this.sellOffers")
-      console.log(this.sellOffers)
     },
     async getAllProducts() {
       this.products = (await axios.get('https://test-green-repack-back.herokuapp.com/api/product')).data;
-      console.log("this.products")
-      console.log(this.products)
     },
     /*retrieveSellOffers() {
       this.sellerId = localStorage.sellerId;
@@ -149,12 +140,9 @@ export default {
       });
     },*/
     mergeSellOffersProducts () {
-      console.log("ici")
-      console.log(this.products) // print empty array
-      console.log(this.sellOffers) // print empty array
         for (var i = 0; i < this.sellOffers.length; i++) {
-          if (this.sellOffers[i].productId === this.products[i]._id) {
-            this.arr3.push({id: this.sellOffers[i]._id, price: this.sellOffers[i].price, description: this.products[i].description});
+          if (this.sellOffers[i].productId === this.products[i]._id && this.products[i].sent === false) {
+            this.arr3.push({id: this.sellOffers[i]._id, price: this.sellOffers[i].price, description: this.products[i].description, productId: this.products[i]._id} );
         }
       }
       
@@ -189,27 +177,21 @@ export default {
       console.log(id)
       //get one product with sellOfferId
       //set send true
-      this.getProductBySellOffer(id);
-    },
+      // this.getProductBySellOffer(id);
 
-    productSent() {
-      this.showModal = true;
-      var data = {
-        sent: true,
-        images: this.images,
-      };
+      // get one product with id and set a variable product with response 
 
-      ProductServices.updateSent(this.productId, data)
+      ProductServices.get(id)
         .then((response) => {
-          console.log(response.data)
-          this.refreshList();
-          this.showModal = false;
-          //TO DO do something after update
+          //TO DO do something after update¨
+          this.product = response.data;
+          this.images = response.data.images;
+          console.log(response.data)        
         })
         .catch((e) => {
           console.log(e);
         });
-      
+
     },
 
     productSent() {
@@ -218,11 +200,17 @@ export default {
         sent: true,
         images: this.images,
       };
-      ProductServices.updateSent(this.productId, data)
+
+      console.log("iciiii")
+      console.log(this.product._id)
+
+      // update product
+
+      ProductServices.updateSent(this.product._id, data)
         .then((response) => {
-          console.log(response.data)
-          this.refreshList();
+          
           this.showModal = false;
+          this.$router.go()
           //TO DO do something after update
         })
         .catch((e) => {
@@ -232,7 +220,6 @@ export default {
     },
 
     refreshList() {
-      this.retrieveSellOffers();
     },
 
     cancel() {

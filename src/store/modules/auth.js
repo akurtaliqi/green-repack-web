@@ -5,6 +5,7 @@ import {
   LOGINSELLERACTION,
   LOGINADMINACTION,
   SIGNUPBUYERACTION,
+  SIGNUPSELLERACTION,
   SIGNUPFAILED,
   LOGOUTUSER,
   LOGINUSERFROMLOCALSTORAGE,
@@ -15,7 +16,9 @@ import {
   USERLOGGEDINGETTER,
   USERLOGGEDINTYPE,
   SELLERID,
-  USERPROFILE
+  USERPROFILE,
+  BUYERID,
+  SIGNUPSUCCESS
 } from "../constants";
 import authHeader from "./auth-header";
 // State object
@@ -24,7 +27,8 @@ const state = {
   userLoggedIn: {},
   userLogginError: {},
   userLoggedInType: null,
-  sellerId: null
+  sellerId: null,
+  buyerId: null,
 };
 
 // Getter functions
@@ -41,6 +45,9 @@ const getters = {
   [SELLERID]: state => {
     return state.sellerId;
   },
+  [BUYERID]: state => {
+    return state.buyerId;
+  },
   [USERPROFILE]: state => {
     return state.userProfile;
   }
@@ -52,11 +59,15 @@ const mutations = {
     state.userLogginError = {};
     state.userLoggedInType = payload.userType;
     state.sellerId = payload.sellerId;
+    state.buyerId = payload.buyerId;
     state.userType = payload.userType;
     localStorage.setItem("token", JSON.stringify(payload));
     localStorage.setItem("tokenTest", payload.token);
     localStorage.setItem("sellerId", payload.sellerId);
+    localStorage.setItem("buyerId", payload.buyerId);
     localStorage.setItem("userType", payload.userType);
+
+    console.log(JSON.stringify(payload))
     
     // delete payload.userType;
     state.userLoggedIn = payload;
@@ -71,7 +82,14 @@ const mutations = {
     state.userLoggedIn = {};
     state.userLogginError = {};
     state.userType = null;
-  }
+  },
+  [SIGNUPSUCCESS]: state => {
+    state.auth = false;
+    
+  },
+  [SIGNUPFAILED]: state => {
+    state.auth = false;
+  },
 };
 // Actions
 const actions = {
@@ -92,8 +110,24 @@ const actions = {
       return false;
     }
   },
-  [SIGNUPBUYERACTION]: async ({ commit }, { email, password }) => {
-   //do something
+  [SIGNUPSELLERACTION]: async ({ commit }, { email, password }) => {
+    try {
+      const response = (await HTTP.post("/seller/auth/signup", {
+        email,
+        password
+      }));
+      if (response.status === 200) {
+        // response.data.userType = "seller";
+        console.log(response.data)
+        commit(SIGNUPSUCCESS, response.data);
+        
+        return true;
+      }
+    } catch (error) {
+      console.log(error.response);
+      commit(SIGNUPFAILED, error.response.data);
+      return false;
+    }
   },
   [LOGINSELLERACTION]: async ({ commit }, { email, password }) => {
     try {

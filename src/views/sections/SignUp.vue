@@ -3,6 +3,7 @@
     <base-section
       id="sign-up"
     >
+    <base-section-heading icon="mdi-vuetify" title="Créer un compte" />
       <v-container>
         <v-row>
           <v-col

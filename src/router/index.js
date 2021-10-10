@@ -23,8 +23,9 @@ const router = new Router({
           component: () => import("@/views/home/Index.vue")
         },
         {
-          path: "checkoutsuccess",
+          path: "checkoutsuccess/:id",
           name: "CheckOutSuccess",
+          meta: { src: require("@/assets/about.jpg") },
           component: () => import("@/views/checkout/Index.vue")
         },
         {
@@ -38,6 +39,11 @@ const router = new Router({
           name: "Login",
           component: () => import("@/views/login/Index.vue"),
           meta: { access: "restricted" }
+        },
+        {
+          path: "signup",
+          name: "Créer un compte",
+          component: () => import("@/views/signup/Index.vue"),
         },
         {
           path: "products",
@@ -61,6 +67,20 @@ const router = new Router({
           component: () => import("@/views/selloffers/Index.vue"),
           meta: { src: require("@/assets/about.jpg") },
           meta: { requiresAuth: true, access: 'seller' }
+        },
+        {
+          path: "orders",
+          name: "Mes commandes",
+          component: () => import("@/views/orders/Index.vue"),
+          meta: { src: require("@/assets/about.jpg") },
+          meta: { requiresAuth: true, access: 'buyer' }
+        },
+        {
+          path: "buyerprofil",
+          name: "Mes profil",
+          component: () => import("@/views/buyerprofil/Index.vue"),
+          meta: { src: require("@/assets/about.jpg") },
+          meta: { requiresAuth: true, access: 'buyer' }
         },
         {
           path: "managelists",

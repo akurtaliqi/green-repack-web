@@ -48,6 +48,13 @@
 
       <v-list-item two-line>
         <v-list-item-content>
+          <v-list-item-title>Valeur green coins</v-list-item-title>
+          <v-list-item-subtitle>{{currentProduct.greencoinsvalue}}</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item two-line>
+        <v-list-item-content>
           <v-list-item-title>Prix</v-list-item-title>
           <v-list-item-subtitle>{{currentProduct.sellPrice}}</v-list-item-subtitle>
         </v-list-item-content>

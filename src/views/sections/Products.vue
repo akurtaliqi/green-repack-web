@@ -49,6 +49,12 @@
                         {{ item.description }}
                       </v-list-item-content>
                     </v-list-item>
+                    <v-list-item>
+                      <v-list-item-content>Description:</v-list-item-content>
+                      <v-list-item-content class="align-end">
+                        {{ item.sellPrice }}
+                      </v-list-item-content>
+                    </v-list-item>
                    
                     <!--v-expansion-panels
                     flat
@@ -120,6 +126,7 @@ export default {
     itemsPerPage: 20,
     paginations: [],
     fields: [],
+    images: [],
     // buyerId: '612624ab68df834028b29d96',
     userLoggedIn:false,
     // currentUserId: null,
@@ -132,6 +139,7 @@ export default {
       ProductServices.getAll()
         .then(response => {
           this.products = response.data;
+          this.images = response.data.images;
           console.log(response.data);
         })
         .catch(e => {

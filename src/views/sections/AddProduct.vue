@@ -1,5 +1,6 @@
 <template>
   <base-section id="add-product">
+  
     <base-section-heading icon="mdi-vuetify" title="Vendre un produit" />
 
     <v-container>
@@ -88,6 +89,7 @@
           Valider
         </v-btn>
       </v-form>
+    </v-container>
        <v-dialog v-model="showModal" persistent max-width="500px">
         <v-card>
           <v-card-title>Offre d'achat</v-card-title>
@@ -99,8 +101,8 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-    </v-container>
   </base-section>
+  
 </template>
 
 <script>
@@ -187,8 +189,6 @@ export default {
           fd.append(item, this[item]);
         });
         fd.append("productModelId", this.productModelId)
-        console.log("this.productStateId")
-        console.log(this.productStateId)
         this.images.map((file, index) => {
           fd.append('images${index}', file);
         });
@@ -259,7 +259,6 @@ export default {
         ProductServices.delete(this.productId)
         .then((response) => {
           // this.reset();
-          console.log(response);
           this.showModal = false;
         })
         .catch((e) => {
